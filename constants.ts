@@ -1,14 +1,17 @@
 import { Post } from './types';
 
 export const SITE_CONFIG = {
-  // 网站名称
+  // [修改 1] 网站左上角的名称
   name: "Nova.zz.ac",
-  // 个人简介
+  
+  // [修改 2] 首页中间的个人简介
   description: "Exploring the cloud, one bit at a time.",
   
-  // [修改图片 1] 头像
-  // 1. 使用网络图片: "https://example.com/me.jpg"
-  // 2. 使用本地图片: 将图片放入 public 文件夹 (如 public/avatar.jpg), 然后填 "/avatar.jpg"
+  // [修改 3] 头像图片
+  // 方式 A (使用网络图片): 保持 https://... 格式
+  // 方式 B (使用本地图片): 
+  //    1. 把你的照片 (如 me.jpg) 拖进项目的 public 文件夹
+  //    2. 把下面这行改成: avatar: "/me.jpg",
   avatar: "https://picsum.photos/id/64/200/200", 
   
   github: "https://github.com/handsomjack0",
@@ -23,13 +26,13 @@ export const SITE_CONFIG = {
 // Create markdown files named '1.md', '2.md', etc.
 
 // 这些是开发环境或加载失败时的后备数据 (Fallback Data)
-// 如果你想修改实际显示的文章内容或封面图，请去 public/posts/ 文件夹修改对应的 .md 文件
+// 如果你想修改实际显示的文章，请去 public/posts/ 文件夹修改对应的 .md 文件
 export const MOCK_POSTS: Post[] = [
   {
     id: '1',
     title: 'Away’s Expandable Suitcases Are Here – The Most Spacious Bags Yet',
     excerpt: 'Discover why flexibility in luggage is the new standard for modern digital nomads.',
-    // [修改图片 2] 文章封面图 (同上，支持网络链接或本地 /images/xxx.jpg)
+    // [修改 4] 文章封面图 (修改方式同头像)
     coverImage: 'https://picsum.photos/id/48/800/600',
     date: '30 Nov 2023',
     category: 'Travel',
