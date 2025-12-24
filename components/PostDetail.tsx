@@ -160,8 +160,8 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
               
               <div className="flex items-center text-gray-200 text-sm space-x-6">
                  <div className="flex items-center">
-                   <img src={post.author.avatar} alt={post.author.name} className="w-8 h-8 rounded-full mr-2 border border-white/50" />
-                   <span>{post.author.name}</span>
+                   <img src={post.author?.avatar} alt={post.author?.name} className="w-8 h-8 rounded-full mr-2 border border-white/50" />
+                   <span>{post.author?.name}</span>
                  </div>
                  <div className="flex items-center">
                     <Calendar className="w-4 h-4 mr-2" />

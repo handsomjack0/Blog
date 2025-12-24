@@ -57,12 +57,12 @@ const PostCard: React.FC<PostCardProps> = ({ post, featured = false, onClick }) 
 
         <div className="flex items-center mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
            <img 
-             src={post.author.avatar} 
-             alt={post.author.name} 
+             src={post.author?.avatar} 
+             alt={post.author?.name} 
              className="w-8 h-8 rounded-full mr-3"
            />
            <span className="text-sm font-medium text-gray-900 dark:text-white">
-             {post.author.name}
+             {post.author?.name}
            </span>
         </div>
       </div>

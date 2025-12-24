@@ -57,7 +57,9 @@ async function generate() {
         id,
         ...metadata,
         // Ensure tags is an array
-        tags: Array.isArray(metadata.tags) ? metadata.tags : [metadata.tags]
+        tags: Array.isArray(metadata.tags) ? metadata.tags : [metadata.tags],
+        // Ensure author exists (default fallback)
+        author: metadata.author || { name: 'Nova', avatar: 'https://picsum.photos/id/64/200/200' }
       });
     }
   }

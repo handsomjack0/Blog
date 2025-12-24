@@ -6,7 +6,7 @@ import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import PostDetail from './components/PostDetail';
 import SEO from './components/SEO';
-import { MOCK_POSTS } from './constants';
+import { MOCK_POSTS, SITE_CONFIG } from './constants';
 import { Post } from './types';
 import { HelmetProvider } from 'react-helmet-async';
 import { Search } from 'lucide-react';
@@ -48,7 +48,12 @@ const App: React.FC = () => {
         
         if (response.ok) {
           const data = await response.json();
-          setPosts(data);
+          // Sanitize data: Fill in missing author info if it doesn't exist in the JSON
+          const sanitizedData = data.map((post: any) => ({
+            ...post,
+            author: post.author || { name: SITE_CONFIG.name, avatar: SITE_CONFIG.avatar }
+          }));
+          setPosts(sanitizedData);
         } else {
           // 2. Dev/Fallback Mode: If posts.json isn't found (e.g. running local dev without build)
           // manually fetch a few known posts to allow development.
