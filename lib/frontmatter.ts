@@ -5,7 +5,9 @@ import { SITE_CONFIG } from '../constants';
 // This allows the app to fetch .md files directly and display them
 // without needing a build step for the demo environment.
 export function parseFrontmatter(markdown: string): { metadata: Partial<Post>; content: string } {
-  const frontmatterRegex = /^---\n([\s\S]*?)\n---/;
+  // Enhanced regex to handle \r\n (Windows) and \n (Linux/Mac)
+  // Also handles optional whitespace before the first dashes
+  const frontmatterRegex = /^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---/;
   const match = markdown.match(frontmatterRegex);
 
   if (!match) {
@@ -16,7 +18,7 @@ export function parseFrontmatter(markdown: string): { metadata: Partial<Post>; c
   const content = markdown.replace(frontmatterRegex, '').trim();
   const metadata: any = {};
 
-  frontmatterBlock.split('\n').forEach((line) => {
+  frontmatterBlock.split(/\r?\n/).forEach((line) => {
     const [key, ...valueParts] = line.split(':');
     if (key && valueParts.length) {
       const trimmedKey = key.trim();
