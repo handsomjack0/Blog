@@ -1,9 +1,16 @@
 import { Post } from './types';
 
 export const SITE_CONFIG = {
+  // 网站名称
   name: "Nova.zz.ac",
+  // 个人简介
   description: "Exploring the cloud, one bit at a time.",
+  
+  // [修改图片 1] 头像
+  // 1. 使用网络图片: "https://example.com/me.jpg"
+  // 2. 使用本地图片: 将图片放入 public 文件夹 (如 public/avatar.jpg), 然后填 "/avatar.jpg"
   avatar: "https://picsum.photos/id/64/200/200", 
+  
   github: "https://github.com/handsomjack0",
   links: {
     cloudLab: "https://epic.nova.zz.ac",
@@ -15,11 +22,14 @@ export const SITE_CONFIG = {
 // Please create a folder named 'posts' in your public root.
 // Create markdown files named '1.md', '2.md', etc.
 
+// 这些是开发环境或加载失败时的后备数据 (Fallback Data)
+// 如果你想修改实际显示的文章内容或封面图，请去 public/posts/ 文件夹修改对应的 .md 文件
 export const MOCK_POSTS: Post[] = [
   {
     id: '1',
     title: 'Away’s Expandable Suitcases Are Here – The Most Spacious Bags Yet',
     excerpt: 'Discover why flexibility in luggage is the new standard for modern digital nomads.',
+    // [修改图片 2] 文章封面图 (同上，支持网络链接或本地 /images/xxx.jpg)
     coverImage: 'https://picsum.photos/id/48/800/600',
     date: '30 Nov 2023',
     category: 'Travel',
