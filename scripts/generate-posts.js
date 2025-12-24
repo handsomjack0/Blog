@@ -14,13 +14,15 @@ const OUTPUT_FILE = path.join(process.cwd(), 'public/posts.json');
 // Simple regex parser for Frontmatter to avoid dependencies in this demo script
 // In a real production setup, use 'gray-matter'
 function parseFrontmatter(content) {
-  const match = content.match(/^---\n([\s\S]*?)\n---/);
+  // Enhanced regex to handle \r\n (Windows) and \n (Linux/Mac)
+  // Also handles optional whitespace before the first dashes
+  const match = content.match(/^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---/);
   if (!match) return null;
   
   const metadata = {};
   const frontmatter = match[1];
   
-  frontmatter.split('\n').forEach(line => {
+  frontmatter.split(/\r?\n/).forEach(line => {
     const [key, ...valueParts] = line.split(':');
     if (key && valueParts.length) {
       let value = valueParts.join(':').trim();
