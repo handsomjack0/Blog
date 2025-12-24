@@ -21,7 +21,8 @@ interface PostDetailProps {
   onBack: () => void;
 }
 
-const CodeBlock = ({ children, className, ...rest }: any) => {
+// Custom CodeBlock component for React Markdown
+const CodeBlock = ({ children, className, node, ...rest }: any) => {
   const [copied, setCopied] = useState(false);
   const match = /language-(\w+)/.exec(className || '');
   const language = match ? match[1] : '';
@@ -34,6 +35,7 @@ const CodeBlock = ({ children, className, ...rest }: any) => {
   };
 
   if (!match) {
+    // Note: We deliberately exclude 'node' from props passed to the DOM element
     return <code className={className} {...rest}>{children}</code>;
   }
 
