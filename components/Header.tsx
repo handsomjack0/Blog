@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Moon, Sun, Search, Github } from 'lucide-react';
+import { Menu, X, Moon, Sun, Search, Github, Rss } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface HeaderProps {
   darkMode: boolean;
@@ -9,6 +10,8 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +20,20 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    setIsMobileMenuOpen(false);
+
+    if (location.pathname !== '/') {
+      // If we are on a post page, go home first, then scroll
+      navigate('/', { state: { scrollTo: targetId } });
+    } else {
+      // If already on home, just scroll
+      const element = document.getElementById(targetId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <header 
@@ -29,7 +46,10 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex-shrink-0 flex items-center cursor-pointer">
+          <div 
+            className="flex-shrink-0 flex items-center cursor-pointer"
+            onClick={() => navigate('/')}
+          >
             <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
               Nova<span className="text-primary-600">.</span>
             </span>
@@ -41,7 +61,8 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors"
+                onClick={(e) => handleNavClick(e, item.toLowerCase())}
+                className="text-gray-600 hover:text-primary-600 dark:text-gray-300 dark:hover:text-primary-400 font-medium transition-colors cursor-pointer"
               >
                 {item}
               </a>
@@ -50,9 +71,9 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
 
           {/* Right Icons */}
           <div className="hidden md:flex items-center space-x-4">
-             <button className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors">
-              <Search className="w-5 h-5" />
-            </button>
+             <a href="/rss.xml" target="_blank" className="p-2 text-gray-500 hover:text-orange-500 transition-colors" title="RSS Feed">
+              <Rss className="w-5 h-5" />
+            </a>
             <button 
               onClick={toggleDarkMode} 
               className="p-2 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-yellow-400 transition-colors"
@@ -89,7 +110,8 @@ const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode }) => {
             {['Home', 'Portfolio', 'Podcast', 'Blog', 'Contact'].map((item) => (
               <a
                 key={item}
-                href="#"
+                href={`#${item.toLowerCase()}`}
+                onClick={(e) => handleNavClick(e, item.toLowerCase())}
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-200 dark:hover:bg-gray-800"
               >
                 {item}

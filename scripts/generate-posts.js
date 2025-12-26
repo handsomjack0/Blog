@@ -1,32 +1,28 @@
 import fs from 'fs';
 import path from 'path';
 
-// NOTE: You need to install 'gray-matter' to run this script locally:
-// npm install gray-matter
-
 // This script scans the public/posts directory, parses Frontmatter,
-// and generates a posts.json file. This allows the frontend to know
-// about all posts without manual updates to constants.ts.
+// calculates reading time, and generates both posts.json and rss.xml.
 
 const POSTS_DIR = path.join(process.cwd(), 'public/posts');
-const OUTPUT_FILE = path.join(process.cwd(), 'public/posts.json');
+const POSTS_JSON_FILE = path.join(process.cwd(), 'public/posts.json');
+const RSS_FILE = path.join(process.cwd(), 'public/rss.xml');
 
-// Simple regex parser for Frontmatter to avoid dependencies in this demo script
-// In a real production setup, use 'gray-matter'
+// Site URL for RSS links (Modify this to your actual domain)
+const SITE_URL = "https://nova.zz.ac";
+
 function parseFrontmatter(content) {
-  // Enhanced regex to handle \r\n (Windows) and \n (Linux/Mac)
-  // Also handles optional whitespace before the first dashes
   const match = content.match(/^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---/);
-  if (!match) return null;
+  if (!match) return { metadata: null, body: content };
   
   const metadata = {};
   const frontmatter = match[1];
+  const body = content.replace(match[0], '').trim();
   
   frontmatter.split(/\r?\n/).forEach(line => {
     const [key, ...valueParts] = line.split(':');
     if (key && valueParts.length) {
       let value = valueParts.join(':').trim();
-      // Handle arrays like [a, b]
       if (value.startsWith('[') && value.endsWith(']')) {
         value = value.slice(1, -1).split(',').map(s => s.trim());
       }
@@ -34,7 +30,40 @@ function parseFrontmatter(content) {
     }
   });
   
-  return metadata;
+  return { metadata, body };
+}
+
+// Calculate reading time: avg 200 words per minute
+function calculateReadTime(text) {
+  const wordsPerMinute = 200;
+  const wordCount = text.split(/\s+/).length;
+  const minutes = Math.ceil(wordCount / wordsPerMinute);
+  return `${minutes} min`;
+}
+
+function generateRSS(posts) {
+  const date = new Date().toUTCString();
+  const rssItemsXml = posts.map(post => `
+    <item>
+      <title><![CDATA[${post.title}]]></title>
+      <link>${SITE_URL}/post/${post.id}</link>
+      <guid>${SITE_URL}/post/${post.id}</guid>
+      <description><![CDATA[${post.excerpt}]]></description>
+      <pubDate>${new Date(post.date).toUTCString()}</pubDate>
+    </item>
+  `).join('');
+
+  return `<?xml version="1.0" ?>
+<rss version="2.0">
+  <channel>
+    <title>Nova Tech Blog</title>
+    <link>${SITE_URL}</link>
+    <description>Exploring the cloud, one bit at a time.</description>
+    <language>en-us</language>
+    <lastBuildDate>${date}</lastBuildDate>
+    ${rssItemsXml}
+  </channel>
+</rss>`;
 }
 
 async function generate() {
@@ -47,18 +76,20 @@ async function generate() {
   const posts = [];
 
   for (const file of files) {
-    const content = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
-    const metadata = parseFrontmatter(content);
+    const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
+    const { metadata, body } = parseFrontmatter(rawContent);
     
     if (metadata) {
-      // Use filename as ID (e.g., "1.md" -> "1")
       const id = file.replace('.md', '');
+      
+      // Auto-calculate read time if not provided
+      const readTime = metadata.readTime || calculateReadTime(body);
+
       posts.push({
         id,
         ...metadata,
-        // Ensure tags is an array
+        readTime,
         tags: Array.isArray(metadata.tags) ? metadata.tags : [metadata.tags],
-        // Ensure author exists (default fallback)
         author: metadata.author || { name: 'Nova', avatar: 'https://picsum.photos/id/64/200/200' }
       });
     }
@@ -67,8 +98,14 @@ async function generate() {
   // Sort by date descending
   posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(posts, null, 2));
-  console.log(`Successfully generated metadata for ${posts.length} posts at ${OUTPUT_FILE}`);
+  // Write JSON index
+  fs.writeFileSync(POSTS_JSON_FILE, JSON.stringify(posts, null, 2));
+  console.log(`Generated JSON index for ${posts.length} posts.`);
+
+  // Write RSS Feed
+  const rssContent = generateRSS(posts);
+  fs.writeFileSync(RSS_FILE, rssContent);
+  console.log(`Generated RSS Feed at ${RSS_FILE}`);
 }
 
 generate();

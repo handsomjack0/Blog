@@ -16,9 +16,150 @@ import { Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Fuse from 'fuse.js';
 import { fetchPostWithFrontmatter } from './lib/frontmatter';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 
-const App: React.FC = () => {
-  // Theme State
+// Wrapper to handle Home Logic including Scroll
+const Home = ({ 
+  posts, 
+  isPostsLoading, 
+  handlePostClick,
+  searchQuery,
+  setSearchQuery,
+  fuse 
+}: any) => {
+  const location = useLocation();
+  
+  // Handle "Return from blog post" scrolling
+  useEffect(() => {
+    if (location.state && location.state.scrollTo) {
+      const element = document.getElementById(location.state.scrollTo);
+      if (element) {
+        setTimeout(() => element.scrollIntoView({ behavior: 'smooth' }), 100);
+      }
+      // Clear state to prevent scrolling on refresh (optional, depends on preference)
+    }
+  }, [location]);
+
+  // Filter Posts
+  const filteredPosts = useMemo(() => {
+    if (!searchQuery) return posts;
+    return fuse.search(searchQuery).map((result: any) => result.item);
+  }, [searchQuery, posts, fuse]);
+
+  const handleReadNotes = () => {
+    document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <div id="home">
+        <Hero onReadNotes={handleReadNotes} />
+      </div>
+
+      <Portfolio />
+      <Podcast />
+
+      <div id="blog" className="py-20 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col lg:flex-row gap-12">
+            <div className="lg:w-2/3">
+              <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
+                <h2 className="text-2xl font-bold border-l-4 border-primary-500 pl-4 self-start sm:self-center">Latest Tech Notes</h2>
+                <div className="relative w-full sm:w-auto">
+                   <input 
+                      type="text" 
+                      placeholder="Search (e.g., 'React' or 'DevOps')..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full sm:w-64 pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-shadow"
+                   />
+                   <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
+                </div>
+              </div>
+
+              {isPostsLoading ? (
+                 <div className="grid grid-cols-1 gap-8">
+                    {[1, 2, 3].map(i => (
+                        <div key={i} className="bg-gray-100 dark:bg-gray-800 h-64 rounded-2xl animate-pulse"></div>
+                    ))}
+                 </div>
+              ) : filteredPosts.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {!searchQuery && (
+                    <div className="md:col-span-2">
+                      <PostCard 
+                        post={filteredPosts[0]} 
+                        featured={true} 
+                        onClick={handlePostClick} 
+                      />
+                    </div>
+                  )}
+                  {(searchQuery ? filteredPosts : filteredPosts.slice(1)).map((post: Post) => (
+                    <PostCard 
+                      key={post.id} 
+                      post={post} 
+                      onClick={handlePostClick} 
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-20 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+                  <p className="text-gray-500">No articles found matching "{searchQuery}"</p>
+                </div>
+              )}
+
+              {!searchQuery && !isPostsLoading && (
+                <div className="mt-12 flex justify-center">
+                    <button className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                        Load More Articles
+                    </button>
+                </div>
+              )}
+            </div>
+            <div className="lg:w-1/3">
+                <div className="sticky top-24">
+                  <Sidebar />
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Contact />
+    </motion.div>
+  );
+};
+
+// Wrapper for Post Detail to fetch params
+const PostView = ({ posts }: { posts: Post[] }) => {
+  const { id } = useParams();
+  const post = posts.find(p => p.id === id) || { 
+    id: id || '', 
+    title: 'Loading...', 
+    excerpt: '', 
+    date: '', 
+    category: '', 
+    tags: [], 
+    coverImage: '', 
+    readTime: '', 
+    author: { name: '', avatar: '' } 
+  };
+
+  return (
+    <motion.div
+       key="post"
+       className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 max-w-5xl"
+    >
+       <PostDetail post={post} />
+    </motion.div>
+  );
+};
+
+const AppContent: React.FC = () => {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme');
@@ -30,41 +171,27 @@ const App: React.FC = () => {
     return false;
   });
 
-  // Navigation State
-  const [currentView, setCurrentView] = useState<'home' | 'post'>('home');
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-
-  // Data State (Runtime fetching)
   const [posts, setPosts] = useState<Post[]>([]);
   const [isPostsLoading, setIsPostsLoading] = useState(true);
-
-  // Search State
   const [searchQuery, setSearchQuery] = useState('');
+  const navigate = useNavigate();
 
-  // Initial Data Load
   useEffect(() => {
     const initPosts = async () => {
       try {
-        // 1. Production Mode: Try fetching the generated index first
-        // This file is created by 'npm run build' (scripts/generate-posts.js)
         const response = await fetch('/posts.json');
-        
         if (response.ok) {
           const data = await response.json();
-          // Sanitize data: Fill in missing author info if it doesn't exist in the JSON
           const sanitizedData = data.map((post: any) => ({
             ...post,
             author: post.author || { name: SITE_CONFIG.name, avatar: SITE_CONFIG.avatar }
           }));
           setPosts(sanitizedData);
         } else {
-          // 2. Dev/Fallback Mode: If posts.json isn't found (e.g. running local dev without build)
-          // manually fetch a few known posts to allow development.
           throw new Error("posts.json not found");
         }
       } catch (e) {
         console.warn("Falling back to runtime fetching:", e);
-        // Fallback for demo/dev environment
         const postIds = ['1', '2', '3', '4', '5', '6']; 
         try {
           const promises = postIds.map(id => fetchPostWithFrontmatter(id));
@@ -78,20 +205,17 @@ const App: React.FC = () => {
         setIsPostsLoading(false);
       }
     };
-
     initPosts();
   }, []);
 
-  // Configure Fuse.js
   const fuse = useMemo(() => {
     return new Fuse(posts, {
       keys: ['title', 'excerpt', 'tags', 'category'],
-      threshold: 0.4, // Fuzzy matching sensitivity
+      threshold: 0.4,
       includeScore: true
     });
   }, [posts]);
 
-  // Apply theme
   useEffect(() => {
     const root = window.document.documentElement;
     if (darkMode) {
@@ -103,164 +227,50 @@ const App: React.FC = () => {
     }
   }, [darkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  const toggleDarkMode = () => setDarkMode(!darkMode);
 
   const handlePostClick = (post: Post) => {
-    setSelectedPost(post);
-    setCurrentView('post');
+    navigate(`/post/${post.id}`);
   };
-
-  const handleBackToHome = () => {
-    setCurrentView('home');
-    setSelectedPost(null);
-  };
-
-  const handleReadNotes = () => {
-    if (currentView === 'post') {
-      handleBackToHome();
-      // Wait for state update and render, then scroll
-      setTimeout(() => {
-        document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-    } else {
-      document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  // Filter Posts using Fuse.js
-  const filteredPosts = useMemo(() => {
-    if (!searchQuery) return posts;
-    return fuse.search(searchQuery).map(result => result.item);
-  }, [searchQuery, posts, fuse]);
 
   return (
     <HelmetProvider>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans selection:bg-primary-500 selection:text-white">
-        <SEO title={selectedPost?.title} description={selectedPost?.excerpt} />
-        
+        <SEO />
         <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        
         <main>
           <AnimatePresence mode="wait">
-            {currentView === 'home' && (
-              <motion.div
-                key="home"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                {/* 1. Hero Section (Home) */}
-                <div id="home">
-                  <Hero onReadNotes={handleReadNotes} />
-                </div>
-
-                {/* 2. Portfolio Section */}
-                <Portfolio />
-
-                {/* 3. Podcast Section */}
-                <Podcast />
-
-                {/* 4. Blog Section */}
-                <div id="blog" className="py-20 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
-                  <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row gap-12">
-                      
-                      {/* Main Blog Feed */}
-                      <div className="lg:w-2/3">
-                        <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-                          <h2 className="text-2xl font-bold border-l-4 border-primary-500 pl-4 self-start sm:self-center">Latest Tech Notes</h2>
-                          
-                          {/* Search Bar */}
-                          <div className="relative w-full sm:w-auto">
-                             <input 
-                                type="text" 
-                                placeholder="Search (e.g., 'React' or 'DevOps')..." 
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full sm:w-64 pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm focus:ring-2 focus:ring-primary-500 outline-none transition-shadow"
-                             />
-                             <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
-                          </div>
-                        </div>
-
-                        {isPostsLoading ? (
-                           <div className="grid grid-cols-1 gap-8">
-                              {[1, 2, 3].map(i => (
-                                  <div key={i} className="bg-gray-100 dark:bg-gray-800 h-64 rounded-2xl animate-pulse"></div>
-                              ))}
-                           </div>
-                        ) : filteredPosts.length > 0 ? (
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            {/* First post is featured (only if no search query) */}
-                            {!searchQuery && (
-                              <div className="md:col-span-2">
-                                <PostCard 
-                                  post={filteredPosts[0]} 
-                                  featured={true} 
-                                  onClick={handlePostClick} 
-                                />
-                              </div>
-                            )}
-                            
-                            {/* Rest of the posts */}
-                            {(searchQuery ? filteredPosts : filteredPosts.slice(1)).map((post) => (
-                              <PostCard 
-                                key={post.id} 
-                                post={post} 
-                                onClick={handlePostClick} 
-                              />
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-center py-20 bg-gray-50 dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
-                            <p className="text-gray-500">No articles found matching "{searchQuery}"</p>
-                          </div>
-                        )}
-
-                        {/* Pagination (Visual) */}
-                        {!searchQuery && !isPostsLoading && (
-                          <div className="mt-12 flex justify-center">
-                              <button className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
-                                  Load More Articles
-                              </button>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Sidebar */}
-                      <div className="lg:w-1/3">
-                          <div className="sticky top-24">
-                            <Sidebar />
-                          </div>
-                      </div>
-
-                    </div>
-                  </div>
-                </div>
-
-                {/* 5. Contact Section */}
-                <Contact />
-
-              </motion.div>
-            )}
-
-            {currentView === 'post' && selectedPost && (
-              <motion.div
-                 key="post"
-                 className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 max-w-5xl"
-              >
-                  <PostDetail post={selectedPost} onBack={handleBackToHome} />
-              </motion.div>
-            )}
+            <Routes>
+              <Route 
+                path="/" 
+                element={
+                  <Home 
+                    posts={posts} 
+                    isPostsLoading={isPostsLoading} 
+                    handlePostClick={handlePostClick}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    fuse={fuse}
+                  />
+                } 
+              />
+              <Route 
+                path="/post/:id" 
+                element={<PostView posts={posts} />} 
+              />
+            </Routes>
           </AnimatePresence>
         </main>
-
         <Footer />
       </div>
     </HelmetProvider>
   );
 };
+
+const App = () => (
+  <BrowserRouter>
+    <AppContent />
+  </BrowserRouter>
+);
 
 export default App;

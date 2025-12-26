@@ -7,6 +7,11 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import Prism from 'prismjs';
 import { PostDetailSkeleton } from './Skeleton';
 import { fetchPostWithFrontmatter } from '../lib/frontmatter';
+import { useNavigate } from 'react-router-dom';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import Mermaid from './Mermaid';
 
 // Add necessary Prism languages
 import 'prismjs/components/prism-javascript';
@@ -18,15 +23,19 @@ import 'prismjs/components/prism-python';
 
 interface PostDetailProps {
   post: Post;
-  onBack: () => void;
 }
 
-// Custom CodeBlock component for React Markdown
+// Custom CodeBlock component
 const CodeBlock = ({ children, className, node, ...rest }: any) => {
   const [copied, setCopied] = useState(false);
   const match = /language-(\w+)/.exec(className || '');
   const language = match ? match[1] : '';
   const content = String(children).replace(/\n$/, '');
+
+  // Intercept Mermaid blocks
+  if (language === 'mermaid') {
+    return <Mermaid chart={content} />;
+  }
 
   const handleCopy = () => {
     navigator.clipboard.writeText(content);
@@ -35,7 +44,6 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
   };
 
   if (!match) {
-    // Note: We deliberately exclude 'node' from props passed to the DOM element
     return <code className={className} {...rest}>{children}</code>;
   }
 
@@ -49,7 +57,6 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
            <div className="w-3 h-3 rounded-full bg-green-500" />
          </div>
          <div className="text-xs text-gray-400 font-mono">{language}</div>
-         {/* Copy Button */}
          <button 
            onClick={handleCopy}
            className="flex items-center justify-center p-1 rounded-md hover:bg-white/10 transition-colors text-gray-400"
@@ -68,11 +75,11 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
   );
 };
 
-const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
+const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
   
-  // Reading Progress Logic
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -80,24 +87,19 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
     restDelta: 0.001
   });
 
-  // Scroll to top when mounting a new post
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [post.id]);
 
-  // Load Content
   useEffect(() => {
     const loadContent = async () => {
       setIsLoading(true);
-      
-      // If content was already loaded during the list view (preloading), use it
       if (post.content) {
         setContent(post.content);
         setIsLoading(false);
         return;
       }
 
-      // Otherwise fetch it again (fallback)
       try {
         const fullPost = await fetchPostWithFrontmatter(post.id);
         setContent(fullPost.content || '');
@@ -111,7 +113,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
     loadContent();
   }, [post.id, post.content]);
 
-  // Apply Prism highlighting when content changes
   useEffect(() => {
     if (!isLoading && content) {
       setTimeout(() => Prism.highlightAll(), 0);
@@ -124,7 +125,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
 
   return (
     <>
-      {/* Reading Progress Bar - Fixed at top */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-primary-500 origin-left z-[60]"
         style={{ scaleX }}
@@ -137,7 +137,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
         transition={{ duration: 0.3 }}
         className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden"
       >
-        {/* Cover Image */}
         <div className="relative h-64 md:h-96 w-full">
           <img 
             src={post.coverImage} 
@@ -146,7 +145,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-8">
               <button 
-                onClick={onBack}
+                onClick={() => navigate('/')}
                 className="absolute top-6 left-6 p-2 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/30 transition-colors"
               >
                 <ArrowLeft className="w-6 h-6" />
@@ -175,10 +174,11 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
           </div>
         </div>
 
-        {/* Content */}
         <div className="p-8 md:p-12">
           <div className="prose prose-lg dark:prose-invert max-w-none prose-a:text-primary-600 hover:prose-a:text-primary-500 prose-img:rounded-2xl prose-pre:bg-transparent prose-pre:p-0">
             <Markdown 
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex]}
               components={{
                 code: CodeBlock
               }}
@@ -187,7 +187,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
             </Markdown>
           </div>
 
-          {/* Tags */}
           <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-700 flex flex-wrap gap-2">
              {post.tags.map(tag => (
                <span key={tag} className="flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-sm">
@@ -197,7 +196,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack }) => {
              ))}
           </div>
 
-          {/* Comments */}
           <Giscus />
         </div>
       </motion.article>
