@@ -26,3 +26,23 @@ export interface SocialLink {
   url: string;
   icon: string;
 }
+
+export interface Project {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  link: string;
+  github?: string;
+}
+
+export interface PodcastEpisode {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  date: string;
+  cover: string;
+  audioUrl?: string; // Optional link to audio
+}

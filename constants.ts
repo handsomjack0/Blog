@@ -1,4 +1,4 @@
-import { Post } from './types';
+import { Post, Project, PodcastEpisode } from './types';
 
 export const SITE_CONFIG = {
   // [修改 1] 网站左上角的名称
@@ -8,10 +8,6 @@ export const SITE_CONFIG = {
   description: "Exploring the cloud, one bit at a time.",
   
   // [修改 3] 头像图片
-  // 方式 A (使用网络图片): 保持 https://... 格式
-  // 方式 B (使用本地图片): 
-  //    1. 把你的照片 (如 me.jpg) 拖进项目的 public 文件夹
-  //    2. 把下面这行改成: avatar: "/me.jpg",
   avatar: "https://picsum.photos/id/64/200/200", 
   
   github: "https://github.com/handsomjack0",
@@ -20,6 +16,65 @@ export const SITE_CONFIG = {
     fileTransfer: "https://pan.nova.zz.ac",
   }
 };
+
+// MOCK DATA FOR PORTFOLIO
+export const MOCK_PROJECTS: Project[] = [
+  {
+    id: '1',
+    title: 'Cloud Dashboard Pro',
+    description: 'A real-time server monitoring dashboard built with Next.js and WebSocket integration.',
+    image: 'https://picsum.photos/id/1/600/400',
+    tags: ['Next.js', 'WebSocket', 'Tailwind'],
+    link: 'https://epic.nova.zz.ac',
+    github: 'https://github.com'
+  },
+  {
+    id: '2',
+    title: 'Nova File Transfer',
+    description: 'Secure peer-to-peer file sharing service utilizing WebRTC for maximum privacy.',
+    image: 'https://picsum.photos/id/20/600/400',
+    tags: ['WebRTC', 'React', 'Node.js'],
+    link: 'https://pan.nova.zz.ac',
+    github: 'https://github.com'
+  },
+  {
+    id: '3',
+    title: 'AI Code Assistant',
+    description: 'VS Code extension that uses local LLMs to suggest code completions.',
+    image: 'https://picsum.photos/id/60/600/400',
+    tags: ['TypeScript', 'AI', 'VS Code'],
+    link: '#',
+    github: 'https://github.com'
+  }
+];
+
+// MOCK DATA FOR PODCAST
+export const MOCK_PODCASTS: PodcastEpisode[] = [
+  {
+    id: '1',
+    title: 'Ep. 01: The State of Serverless',
+    description: 'Discussing the pros and cons of edge computing in 2024.',
+    duration: '45:20',
+    date: 'Oct 12, 2023',
+    cover: 'https://picsum.photos/id/30/300/300'
+  },
+  {
+    id: '2',
+    title: 'Ep. 02: Minimalism in Tech',
+    description: 'How reducing digital clutter can improve your code quality.',
+    duration: '32:15',
+    date: 'Nov 05, 2023',
+    cover: 'https://picsum.photos/id/40/300/300'
+  },
+  {
+    id: '3',
+    title: 'Ep. 03: Kubernetes Nightmares',
+    description: 'War stories from production outages and how we fixed them.',
+    duration: '55:00',
+    date: 'Dec 01, 2023',
+    cover: 'https://picsum.photos/id/50/300/300'
+  }
+];
 
 // NOTE: Content has been decoupled. 
 // Please create a folder named 'posts' in your public root.
