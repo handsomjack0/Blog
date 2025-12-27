@@ -1,19 +1,26 @@
 backend:
-  name: git-gateway
-  branch: main # Branch to update (change to master if applicable)
+  name: github
+  repo: handsomjack0/forum # 你的 GitHub 仓库 (根据 Giscus 配置推断)
+  branch: main 
+  site_domain: nova.zz.ac
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
 
-media_folder: "public/images/uploads" # Media files will be stored in the repo here
-public_folder: "/images/uploads" # The src attribute for uploaded media
+# 开启本地后端，这样你在本地 npm run dev 时也能用 CMS
+local_backend: true
+
+media_folder: "public/images/uploads"
+public_folder: "/images/uploads"
 
 collections:
-  - name: "posts" # Used in routes, e.g., /admin/collections/posts
-    label: "Blog Posts" # Used in the UI
-    folder: "public/posts" # The path to the folder where the documents are stored
-    create: true # Allow users to create new documents in this collection
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Filename template
-    fields: # The fields for each document, usually in frontmatter
+  - name: "posts"
+    label: "Blog Posts"
+    folder: "public/posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
       - {label: "Title", name: "title", widget: "string"}
-      - {label: "Publish Date", name: "date", widget: "datetime", format: "D MMM YYYY", date_format: "D MMM YYYY", time_format: false}
+      - {label: "Publish Date", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false}
       - {label: "Category", name: "category", widget: "select", options: ["DevOps", "Frontend", "Backend", "Life", "Travel", "Opinion"]}
       - {label: "Tags", name: "tags", widget: "list"}
       - {label: "Read Time", name: "readTime", widget: "string", default: "5 min"}
