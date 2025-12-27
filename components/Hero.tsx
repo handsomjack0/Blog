@@ -30,6 +30,7 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
         className="relative inline-block mb-8"
       >
         <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-tr from-primary-400 to-purple-500 shadow-xl shadow-primary-500/20">
+          {/* 头像图片：数据源自 constants.ts */}
           <img 
             src={SITE_CONFIG.avatar} 
             alt="Profile" 
@@ -37,10 +38,9 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
           />
         </div>
         
-        {/* Enhanced Online Status with Ping Animation */}
-        <div className="absolute bottom-2 right-2 flex h-6 w-6" title="System Online">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-6 w-6 bg-green-500 border-4 border-white dark:border-gray-900"></span>
+        {/* [修改 1] 状态指示灯 (已移除 animate-ping 闪烁效果，改为静止) */}
+        <div className="absolute bottom-3 right-3 flex h-5 w-5" title="System Online">
+          <span className="relative inline-flex rounded-full h-full w-full bg-green-500 border-[3px] border-white dark:border-gray-900"></span>
         </div>
       </motion.div>
 
@@ -157,7 +157,7 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
             >
                 <div className="flex items-center gap-2">
                     <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                      {/* Removed animate-ping here too */}
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
                     </span>
                     <span className="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400">Latest</span>

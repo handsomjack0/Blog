@@ -7,7 +7,7 @@ export const SITE_CONFIG = {
   // [修改 2] 首页中间的个人简介
   description: "Mastering the edge, exploring the unknown.",
   
-  // [修改 3] 头像图片
+  // [修改 3] 头像图片地址 👇 在这里修改你的头像 URL (支持网络链接或本地 /images/xxx.jpg)
   avatar: "https://picsum.photos/id/64/200/200", 
 
   // [修改 4] 联系邮箱
@@ -90,7 +90,7 @@ export const MOCK_POSTS: Post[] = [
     id: '1',
     title: 'Away’s Expandable Suitcases Are Here – The Most Spacious Bags Yet',
     excerpt: 'Discover why flexibility in luggage is the new standard for modern digital nomads.',
-    // [修改 4] 文章封面图 (修改方式同头像)
+    // [修改 4] 文章封面图
     coverImage: 'https://picsum.photos/id/48/800/600',
     date: '30 Nov 2023',
     category: 'Travel',
