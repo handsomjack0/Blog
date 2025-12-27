@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SITE_CONFIG } from '../constants';
 import { Cloud, FileInput, BookOpen, Github, ArrowRight } from 'lucide-react';
 import { motion as motionOriginal } from 'framer-motion';
@@ -14,6 +14,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
   const navigate = useNavigate();
+  const [imgError, setImgError] = useState(false);
 
   return (
     <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center overflow-hidden">
@@ -30,12 +31,21 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
         className="relative inline-block mb-8"
       >
         <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-tr from-primary-400 to-purple-500 shadow-xl shadow-primary-500/20">
-          {/* 头像图片：数据源自 constants.ts */}
-          <img 
-            src={SITE_CONFIG.avatar} 
-            alt="Profile" 
-            className="w-full h-full rounded-full object-cover border-4 border-white dark:border-gray-900 bg-white"
-          />
+          {/* 头像图片：增加错误处理，如果加载失败则显示首字母 */}
+          {!imgError ? (
+            <img 
+              src={SITE_CONFIG.avatar} 
+              alt="Profile" 
+              onError={() => setImgError(true)}
+              className="w-full h-full rounded-full object-cover border-4 border-white dark:border-gray-900 bg-white"
+            />
+          ) : (
+            <div className="w-full h-full rounded-full border-4 border-white dark:border-gray-900 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+               <span className="text-4xl md:text-5xl font-bold text-white">
+                 {SITE_CONFIG.name.charAt(0)}
+               </span>
+            </div>
+          )}
         </div>
         
         {/* [修改 1] 状态指示灯 (已移除 animate-ping 闪烁效果，改为静止) */}

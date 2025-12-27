@@ -80,6 +80,7 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
 const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
   
   const { scrollYProgress } = useScroll();
@@ -161,7 +162,18 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
               
               <div className="flex items-center text-gray-200 text-sm space-x-6">
                  <div className="flex items-center">
-                   <img src={post.author?.avatar} alt={post.author?.name} className="w-8 h-8 rounded-full mr-2 border border-white/50" />
+                   {!imgError ? (
+                     <img 
+                       src={post.author?.avatar} 
+                       alt={post.author?.name} 
+                       onError={() => setImgError(true)}
+                       className="w-8 h-8 rounded-full mr-2 border border-white/50 object-cover" 
+                     />
+                   ) : (
+                     <div className="w-8 h-8 rounded-full mr-2 bg-gradient-to-r from-blue-500 to-purple-500 border border-white/50 flex items-center justify-center text-white text-xs font-bold">
+                       {post.author?.name?.charAt(0) || 'N'}
+                     </div>
+                   )}
                    <span>{post.author?.name}</span>
                  </div>
                  <div className="flex items-center">

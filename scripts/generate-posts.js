@@ -9,6 +9,8 @@ const POSTS_JSON_FILE = path.join(process.cwd(), 'public/posts.json');
 const RSS_FILE = path.join(process.cwd(), 'public/rss.xml');
 
 const SITE_URL = "https://nova.zz.ac";
+// [修改] 统一使用 GitHub 头像
+const DEFAULT_AVATAR = "https://github.com/handsomjack0.png";
 
 function parseFrontmatter(content) {
   // 1. Try Standard Frontmatter
@@ -131,8 +133,8 @@ async function generate() {
         tags,
         coverImage,
         readTime,
-        // Updated fallback avatar to .png
-        author: metadata?.author || { name: 'Nova', avatar: '/images/avatar.png' }
+        // Updated fallback avatar to remote GitHub URL
+        author: metadata?.author || { name: 'Nova', avatar: DEFAULT_AVATAR }
       });
     } catch (err) {
       console.warn(`Skipping file ${file} due to error:`, err.message);

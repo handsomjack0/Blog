@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Post } from '../types';
 import { Clock, Calendar } from 'lucide-react';
 import { motion as motionOriginal } from 'framer-motion';
@@ -12,6 +12,8 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, featured = false, onClick }) => {
+  const [imgError, setImgError] = useState(false);
+
   return (
     <motion.article 
       whileHover={{ y: -5 }}
@@ -58,11 +60,18 @@ const PostCard: React.FC<PostCardProps> = ({ post, featured = false, onClick }) 
         </p>
 
         <div className="flex items-center mt-auto pt-4 border-t border-gray-100 dark:border-gray-700">
-           <img 
-             src={post.author?.avatar} 
-             alt={post.author?.name} 
-             className="w-8 h-8 rounded-full mr-3"
-           />
+           {!imgError ? (
+             <img 
+               src={post.author?.avatar} 
+               alt={post.author?.name} 
+               onError={() => setImgError(true)}
+               className="w-8 h-8 rounded-full mr-3 object-cover"
+             />
+           ) : (
+             <div className="w-8 h-8 rounded-full mr-3 bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+               {post.author?.name?.charAt(0) || 'N'}
+             </div>
+           )}
            <span className="text-sm font-medium text-gray-900 dark:text-white">
              {post.author?.name}
            </span>

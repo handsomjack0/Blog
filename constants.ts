@@ -7,8 +7,10 @@ export const SITE_CONFIG = {
   // [修改 2] 首页中间的个人简介
   description: "Mastering the edge, exploring the unknown.",
   
-  // [修改 3] 头像图片地址 👇 已修正为 .png
-  avatar: "/images/avatar.png", 
+  // [修改 3] 头像策略调整：
+  // 直接使用 GitHub 头像 (https://github.com/username.png)。
+  // 这样避免了本地上传图片变成乱码的问题，且能保持同步。
+  avatar: "https://github.com/handsomjack0.png", 
 
   // [修改 4] 联系邮箱
   email: "Gunddam.X@gmail.com",
