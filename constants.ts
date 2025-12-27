@@ -7,8 +7,8 @@ export const SITE_CONFIG = {
   // [修改 2] 首页中间的个人简介
   description: "Mastering the edge, exploring the unknown.",
   
-  // [修改 3] 头像图片地址 👇 在这里修改你的头像 URL (支持网络链接或本地 /images/xxx.jpg)
-  avatar: "https://picsum.photos/id/64/200/200", 
+  // [修改 3] 头像图片地址 👇 已修改为本地路径
+  avatar: "/images/avatar.jpg", 
 
   // [修改 4] 联系邮箱
   email: "Gunddam.X@gmail.com",

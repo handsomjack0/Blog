@@ -115,7 +115,8 @@ async function generate() {
         tags,
         coverImage,
         readTime,
-        author: metadata?.author || { name: 'Nova', avatar: 'https://picsum.photos/id/64/200/200' }
+        // Updated fallback avatar to local path
+        author: metadata?.author || { name: 'Nova', avatar: '/images/avatar.jpg' }
       });
     } catch (err) {
       console.warn(`Skipping file ${file} due to error:`, err.message);
