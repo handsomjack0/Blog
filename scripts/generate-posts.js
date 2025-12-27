@@ -49,12 +49,28 @@ function parseRawFrontmatter(frontmatter, body) {
   return { metadata, body };
 }
 
-// Calculate reading time: avg 200 words per minute
+// [修改] 优化阅读时间计算算法，支持中文字符
 function calculateReadTime(text) {
-  const wordsPerMinute = 200;
-  const wordCount = text.split(/\s+/).length;
-  const minutes = Math.ceil(wordCount / wordsPerMinute);
-  return `${minutes} min`;
+  const wordsPerMinute = 200; // Average reading speed (CN characters or EN words)
+  
+  // 1. 移除代码块和其他非内容标记，避免干扰计数 (简单处理)
+  const cleanText = text.replace(/```[\s\S]*?```/g, '').replace(/<[^>]*>/g, '');
+  
+  // 2. 匹配中日韩(CJK)字符
+  const cjkMatch = cleanText.match(/[\u4e00-\u9fa5]/g);
+  const cjkCount = cjkMatch ? cjkMatch.length : 0;
+  
+  // 3. 匹配非CJK的单词（主要是英文单词）
+  // 移除CJK字符后，按空格分割
+  const nonCjkText = cleanText.replace(/[\u4e00-\u9fa5]/g, ' ');
+  const wordMatch = nonCjkText.trim().split(/\s+/);
+  const wordCount = (wordMatch.length === 1 && wordMatch[0] === '') ? 0 : wordMatch.length;
+  
+  const totalCount = cjkCount + wordCount;
+  
+  const minutes = Math.ceil(totalCount / wordsPerMinute);
+  // 至少显示 1 min
+  return `${Math.max(1, minutes)} min`;
 }
 
 function generateRSS(posts) {
