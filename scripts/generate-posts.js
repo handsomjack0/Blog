@@ -8,28 +8,44 @@ const POSTS_DIR = path.join(process.cwd(), 'public/posts');
 const POSTS_JSON_FILE = path.join(process.cwd(), 'public/posts.json');
 const RSS_FILE = path.join(process.cwd(), 'public/rss.xml');
 
-// Site URL for RSS links (Modify this to your actual domain)
 const SITE_URL = "https://nova.zz.ac";
 
 function parseFrontmatter(content) {
-  const match = content.match(/^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---/);
-  if (!match) return { metadata: null, body: content };
-  
+  // 1. Try Standard Frontmatter
+  const standardRegex = /^\s*---\s*[\r\n]+([\s\S]*?)[\r\n]+---/;
+  const standardMatch = content.match(standardRegex);
+
+  if (standardMatch) {
+    return parseRawFrontmatter(standardMatch[1], content.replace(standardMatch[0], '').trim());
+  }
+
+  // 2. Try Loose Frontmatter (missing delimiters)
+  const looseRegex = /^((?:[a-z]+:\s*.*[\r\n]+)+)/i;
+  const looseMatch = content.match(looseRegex);
+
+  if (looseMatch && looseMatch[1].includes('title:')) {
+    return parseRawFrontmatter(looseMatch[1], content.replace(looseMatch[0], '').trim());
+  }
+
+  return { metadata: null, body: content };
+}
+
+function parseRawFrontmatter(frontmatter, body) {
   const metadata = {};
-  const frontmatter = match[1];
-  const body = content.replace(match[0], '').trim();
-  
   frontmatter.split(/\r?\n/).forEach(line => {
-    const [key, ...valueParts] = line.split(':');
-    if (key && valueParts.length) {
-      let value = valueParts.join(':').trim();
+    if (!line.trim() || line.trim().startsWith('#')) return;
+    
+    const firstColonIndex = line.indexOf(':');
+    if (firstColonIndex !== -1) {
+      const key = line.slice(0, firstColonIndex).trim();
+      let value = line.slice(firstColonIndex + 1).trim();
+
       if (value.startsWith('[') && value.endsWith(']')) {
         value = value.slice(1, -1).split(',').map(s => s.trim());
       }
-      metadata[key.trim()] = value;
+      metadata[key] = value;
     }
   });
-  
   return { metadata, body };
 }
 
@@ -80,7 +96,6 @@ async function generate() {
       const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
       const { metadata, body } = parseFrontmatter(rawContent);
       
-      // Default fallback values if metadata is missing
       const id = file.replace('.md', '');
       const title = metadata?.title || id.replace(/-/g, ' ');
       const date = metadata?.date || new Date().toDateString();
@@ -89,7 +104,6 @@ async function generate() {
       const tags = Array.isArray(metadata?.tags) ? metadata.tags : (metadata?.tags ? [metadata.tags] : []);
       const coverImage = metadata?.coverImage || `https://picsum.photos/seed/${id}/800/600`;
       
-      // Auto-calculate read time if not provided
       const readTime = metadata?.readTime || calculateReadTime(body);
 
       posts.push({
@@ -108,14 +122,11 @@ async function generate() {
     }
   }
 
-  // Sort by date descending
   posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-  // Write JSON index
   fs.writeFileSync(POSTS_JSON_FILE, JSON.stringify(posts, null, 2));
   console.log(`Generated JSON index for ${posts.length} posts.`);
 
-  // Write RSS Feed
   const rssContent = generateRSS(posts);
   fs.writeFileSync(RSS_FILE, rssContent);
   console.log(`Generated RSS Feed at ${RSS_FILE}`);
