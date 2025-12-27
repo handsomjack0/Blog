@@ -9,6 +9,9 @@ export const SITE_CONFIG = {
   
   // [修改 3] 头像图片
   avatar: "https://picsum.photos/id/64/200/200", 
+
+  // [修改 4] 联系邮箱
+  email: "Gunddam.X@gmail.com",
   
   github: "https://github.com/handsomjack0",
   links: {

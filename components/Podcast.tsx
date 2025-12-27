@@ -1,7 +1,9 @@
 import React from 'react';
 import { MOCK_PODCASTS } from '../constants';
 import { Mic, Play, Clock, Calendar } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion as motionOriginal } from 'framer-motion';
+
+const motion = motionOriginal as any;
 
 const Podcast: React.FC = () => {
   return (

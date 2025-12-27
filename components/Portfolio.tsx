@@ -1,7 +1,9 @@
 import React from 'react';
 import { MOCK_PROJECTS } from '../constants';
 import { Github, ExternalLink, Code } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion as motionOriginal } from 'framer-motion';
+
+const motion = motionOriginal as any;
 
 const Portfolio: React.FC = () => {
   return (

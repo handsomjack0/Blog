@@ -1,7 +1,9 @@
 import React from 'react';
 import { Post } from '../types';
 import { Clock, Calendar } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion as motionOriginal } from 'framer-motion';
+
+const motion = motionOriginal as any;
 
 interface PostCardProps {
   post: Post;

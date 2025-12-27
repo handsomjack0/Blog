@@ -3,7 +3,7 @@ import { Post } from '../types';
 import { ArrowLeft, Calendar, Clock, Tag, Copy, Check } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Giscus from './Giscus';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion as motionOriginal, useScroll, useSpring } from 'framer-motion';
 import Prism from 'prismjs';
 import { PostDetailSkeleton } from './Skeleton';
 import { fetchPostWithFrontmatter } from '../lib/frontmatter';
@@ -20,6 +20,8 @@ import 'prismjs/components/prism-bash';
 import 'prismjs/components/prism-json';
 import 'prismjs/components/prism-css';
 import 'prismjs/components/prism-python';
+
+const motion = motionOriginal as any;
 
 interface PostDetailProps {
   post: Post;

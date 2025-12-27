@@ -1,6 +1,9 @@
 import React from 'react';
 import { Send, Mail, MapPin, MessageSquare } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion as motionOriginal } from 'framer-motion';
+import { SITE_CONFIG } from '../constants';
+
+const motion = motionOriginal as any;
 
 const Contact: React.FC = () => {
   return (
@@ -33,7 +36,7 @@ const Contact: React.FC = () => {
                 </div>
                 <div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">Email</p>
-                  <a href="mailto:hello@nova.zz.ac" className="text-gray-900 dark:text-white font-medium hover:text-primary-500 transition-colors">hello@nova.zz.ac</a>
+                  <a href={`mailto:${SITE_CONFIG.email}`} className="text-gray-900 dark:text-white font-medium hover:text-primary-500 transition-colors">{SITE_CONFIG.email}</a>
                 </div>
               </div>
               

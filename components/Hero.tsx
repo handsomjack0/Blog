@@ -1,7 +1,9 @@
 import React from 'react';
 import { SITE_CONFIG } from '../constants';
 import { Cloud, FileInput, BookOpen, Github } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion as motionOriginal } from 'framer-motion';
+
+const motion = motionOriginal as any;
 
 interface HeroProps {
   onReadNotes: () => void;

@@ -9,14 +9,17 @@ import Portfolio from './components/Portfolio';
 import Podcast from './components/Podcast';
 import Contact from './components/Contact';
 import SEO from './components/SEO';
+import { PrivacyPolicy, TermsOfService } from './components/Legal';
 import { MOCK_POSTS, SITE_CONFIG } from './constants';
 import { Post } from './types';
 import { HelmetProvider } from 'react-helmet-async';
 import { Search } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as motionOriginal, AnimatePresence } from 'framer-motion';
 import Fuse from 'fuse.js';
 import { fetchPostWithFrontmatter } from './lib/frontmatter';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
+
+const motion = motionOriginal as any;
 
 // Wrapper to handle Home Logic including Scroll
 const Home = ({ 
@@ -258,6 +261,8 @@ const AppContent: React.FC = () => {
                 path="/post/:id" 
                 element={<PostView posts={posts} />} 
               />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
             </Routes>
           </AnimatePresence>
         </main>
