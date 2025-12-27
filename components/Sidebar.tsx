@@ -35,10 +35,10 @@ const StatusRow: React.FC<{ label: string; url: string }> = ({ label, url }) => 
   return (
     <div className="flex items-center justify-between py-3 border-b last:border-0 border-gray-100 dark:border-gray-800">
         <div className="flex items-center gap-3">
-            <div className={`w-2 h-2 rounded-full ${status === 'online' ? 'bg-[#34C759] shadow-[0_0_8px_rgba(52,199,89,0.5)]' : 'bg-red-500'}`}></div>
+            <div className={`w-2 h-2 rounded-full transition-all duration-500 ${status === 'online' ? 'bg-[#34C759] shadow-[0_0_8px_rgba(52,199,89,0.5)]' : 'bg-red-500'}`}></div>
             <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{label}</span>
         </div>
-        <span className="text-xs font-mono text-gray-400">
+        <span className="text-[10px] font-mono font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">
            {status === 'online' ? `${latency}ms` : 'OFF'}
         </span>
     </div>
@@ -47,11 +47,14 @@ const StatusRow: React.FC<{ label: string; url: string }> = ({ label, url }) => 
 
 const Sidebar: React.FC = () => {
   return (
-    <aside className="space-y-6">
+    <aside className="space-y-8">
       
       {/* System Status Widget */}
-      <div className="glass-panel p-6 rounded-[1.5rem]">
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">System Status</h3>
+      <div className="bg-white dark:bg-[#1C1C1E] p-6 rounded-[2rem] shadow-premium border border-gray-100 dark:border-gray-800">
+        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Activity className="w-3 h-3" />
+            System Status
+        </h3>
         <div className="flex flex-col">
             <StatusRow label="Epic Core" url={SITE_CONFIG.links.cloudLab} />
             <StatusRow label="Cloud Pan" url={SITE_CONFIG.links.fileTransfer} />
@@ -60,36 +63,41 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Newsletter Widget */}
-      <div className="glass-panel p-6 rounded-[1.5rem] bg-gradient-to-br from-white to-gray-50 dark:from-[#1C1C1E] dark:to-[#2C2C2E]">
-        <div className="flex items-center gap-3 mb-2">
-            <div className="p-1.5 bg-[#007AFF] rounded-lg text-white">
+      <div className="bg-white dark:bg-[#1C1C1E] p-6 rounded-[2rem] shadow-premium border border-gray-100 dark:border-gray-800 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-24 h-24 bg-[#007AFF]/5 rounded-full blur-2xl -translate-y-10 translate-x-10 group-hover:bg-[#007AFF]/10 transition-colors duration-500"></div>
+        
+        <div className="flex items-center gap-3 mb-2 relative">
+            <div className="p-2 bg-[#007AFF]/10 rounded-xl text-[#007AFF]">
                 <Mail className="w-4 h-4" />
             </div>
             <h3 className="font-bold text-gray-900 dark:text-white">Newsletter</h3>
         </div>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 font-medium leading-relaxed">
-          Weekly thoughts on design & tech.
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-5 font-medium leading-relaxed relative">
+          Weekly thoughts on design & tech. No spam.
         </p>
         <form className="relative" onSubmit={(e) => e.preventDefault()}>
           <input 
             type="email" 
             placeholder="Email address" 
-            className="w-full pl-4 pr-10 py-3 rounded-xl bg-gray-100 dark:bg-black/50 border-none outline-none text-sm dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-[#007AFF]/50 transition-all"
+            className="w-full pl-4 pr-12 py-3 rounded-xl bg-gray-50 dark:bg-black/20 border-none outline-none text-sm dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-[#007AFF]/20 transition-all font-medium"
           />
-          <button className="absolute right-2 top-2 p-1 bg-[#007AFF] text-white rounded-lg hover:bg-[#0062CC] transition-colors">
-            <ArrowRight className="w-4 h-4" />
+          <button className="absolute right-2 top-2 p-1.5 bg-[#007AFF] text-white rounded-lg hover:bg-[#0062CC] transition-colors shadow-lg shadow-blue-500/20">
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
       </div>
 
       {/* Tags Cloud */}
-      <div className="glass-panel p-6 rounded-[1.5rem]">
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Explore</h3>
+      <div className="bg-white dark:bg-[#1C1C1E] p-6 rounded-[2rem] shadow-premium border border-gray-100 dark:border-gray-800">
+        <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Tag className="w-3 h-3" />
+            Explore
+        </h3>
         <div className="flex flex-wrap gap-2">
           {TAGS.map(tag => (
             <span 
               key={tag} 
-              className="px-3 py-1.5 bg-gray-100 dark:bg-black/40 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-semibold hover:bg-[#007AFF] hover:text-white dark:hover:bg-[#0A84FF] dark:hover:text-white transition-all cursor-pointer"
+              className="px-3 py-1.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50 text-gray-600 dark:text-gray-300 rounded-lg text-xs font-bold hover:bg-[#007AFF] hover:text-white hover:border-[#007AFF] dark:hover:bg-[#0A84FF] dark:hover:text-white transition-all cursor-pointer shadow-sm hover:shadow-md"
             >
               {tag}
             </span>
