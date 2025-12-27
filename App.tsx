@@ -53,6 +53,9 @@ const Home = ({
     document.getElementById('blog')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Get the absolute latest post for Hero section
+  const latestPost = posts.length > 0 ? posts[0] : null;
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -60,7 +63,8 @@ const Home = ({
       exit={{ opacity: 0 }}
     >
       <div id="home">
-        <Hero onReadNotes={handleReadNotes} />
+        {/* Pass latestPost to Hero */}
+        <Hero onReadNotes={handleReadNotes} latestPost={latestPost} />
       </div>
 
       <Portfolio />
