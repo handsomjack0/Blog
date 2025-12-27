@@ -5,94 +5,64 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   body {
-    font-family: 'Inter', sans-serif;
-    font-feature-settings: 'cv11', 'ss01';
-    -webkit-font-smoothing: antialiased;
+    /* [修改] 默认背景色调整为 Apple Light Gray */
+    @apply bg-gray-50 text-gray-900 dark:bg-black dark:text-gray-100;
   }
 }
 
 @layer utilities {
-  .animate-gradient-x {
-    background-size: 200% auto;
-    animation: gradient-x 4s linear infinite;
+  /* [修改] 移除 grainy noise，改用纯净的 Apple Glass */
+  .glass-panel {
+    @apply bg-white/70 dark:bg-[#1C1C1E]/70 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-glass;
   }
   
-  /* [修改] 增强噪点纹理，使其看起来更像高级特种纸 (Grainy Texture) */
-  .bg-noise {
-    position: relative;
-    isolation: isolate;
-  }
-  .bg-noise::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0.07; /* 稍微增加不透明度 */
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    mix-blend-mode: overlay;
+  .glass-bar {
+    @apply bg-white/80 dark:bg-[#1D1D1F]/80 backdrop-blur-md border-b border-gray-200/50 dark:border-gray-800/50;
   }
 }
 
-/* 极客风格列表样式 */
-.prose ul {
-  list-style: none !important;
-  padding-left: 0 !important;
+/* [修改] 优化排版细节，使其更像 Apple 的文案排版 */
+.prose {
+  @apply tracking-normal leading-relaxed text-gray-800 dark:text-gray-200;
 }
 
-.prose ul > li {
-  position: relative;
-  padding-left: 1.5em;
-  margin-top: 0.5em;
-  margin-bottom: 0.5em;
+.prose h1, .prose h2, .prose h3 {
+  @apply font-semibold tracking-tight text-gray-900 dark:text-white;
 }
 
-.prose ul > li::before {
-  content: "->";
-  font-family: 'JetBrains Mono', monospace;
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #6366f1;
-  font-weight: bold;
-  font-size: 0.9em;
-}
-.dark .prose ul > li::before {
-  color: #818cf8;
+.prose a {
+  @apply text-[#007AFF] no-underline hover:underline transition-all;
 }
 
-@keyframes gradient-x {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-
+/* Custom Scrollbar - 隐藏或极简，类似 iOS */
 ::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
+  width: 0px;
   background: transparent;
 }
-::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
-  border-radius: 4px;
+
+/* List styles overhaul - clean bullet points */
+.prose ul > li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #d1d1d6; /* Gray 200 */
+  position: absolute;
+  left: 0;
+  top: 0.7em;
 }
-.dark ::-webkit-scrollbar-thumb {
-  background: #3f3f46;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #a1a1aa;
-}
-.dark ::-webkit-scrollbar-thumb:hover {
-  background: #52525b;
+.dark .prose ul > li::before {
+  background-color: #636366;
 }
 
+/* Code blocks - resemble Xcode or Terminal */
 pre[class*="language-"] {
-  border-radius: 0.75rem;
-  margin: 1.5em 0;
+  border-radius: 1rem;
+  margin: 2em 0;
+  background-color: #1c1c1e !important; /* Dark Gray */
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }

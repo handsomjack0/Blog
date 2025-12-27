@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SITE_CONFIG } from '../constants';
-import { Cloud, FileInput, BookOpen, ArrowUpRight, ArrowRight } from 'lucide-react';
+import { Cloud, FileInput, BookOpen, ArrowUpRight, ArrowRight, Command } from 'lucide-react';
 import { motion as motionOriginal } from 'framer-motion';
 import { Post } from '../types';
 import { useNavigate } from 'react-router-dom';
@@ -16,175 +16,166 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
   const navigate = useNavigate();
   const [imgError, setImgError] = useState(false);
 
+  // Animation variants for "Pop" effect (Apple style)
+  const popVariant = {
+    hover: { scale: 1.03, transition: { type: "spring", stiffness: 400, damping: 25 } },
+    tap: { scale: 0.97 }
+  };
+
   return (
-    <section className="relative pt-48 pb-32 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center overflow-hidden">
+    <section className="relative pt-40 pb-20 px-6 max-w-7xl mx-auto overflow-hidden">
       
-      {/* Background: Clean, Pure with Ambient Glow */}
-      {/* 移除之前的网格背景，只保留一个非常柔和的中心光晕 */}
+      {/* Background: Extremely subtle blur orb, almost invisible */}
       <div 
-        className="absolute top-[-20%] left-1/2 -translate-x-1/2 -z-10 w-[800px] h-[800px] rounded-full pointer-events-none opacity-60 dark:opacity-20"
+        className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[1000px] h-[600px] opacity-40 dark:opacity-20 pointer-events-none"
         style={{ 
-          background: 'radial-gradient(circle at 50% 50%, rgba(224, 231, 255, 0.5) 0%, rgba(255, 255, 255, 0) 70%)',
-          filter: 'blur(80px)'
+          background: 'radial-gradient(50% 50% at 50% 50%, #007AFF 0%, rgba(255, 255, 255, 0) 100%)',
+          filter: 'blur(120px)'
         }}
       ></div>
-      
-      {/* Avatar Container: 增加悬浮感 (Layered Shadows) */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95, y: 10 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 1.0, ease: "easeOut" }}
-        className="relative inline-block mb-12 group"
-      >
-        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.12)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden bg-white dark:bg-gray-800 transition-transform duration-500 ease-out group-hover:scale-105">
-          {!imgError ? (
-            <img 
-              src={SITE_CONFIG.avatar} 
-              alt="Profile" 
-              onError={() => setImgError(true)}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-50 dark:bg-gray-800 text-gray-300 dark:text-gray-600">
-               <span className="text-4xl font-serif italic">N</span>
-            </div>
-          )}
-        </div>
+
+      <div className="flex flex-col items-center text-center">
         
-        {/* Status Indicator: 移除硬边框，使用更自然的阴影 */}
-        <div className="absolute bottom-3 right-3 flex h-3.5 w-3.5" title="System Online">
-           <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500 shadow-sm border-2 border-[#F9FAFB] dark:border-gray-950"></span>
-        </div>
-      </motion.div>
+        {/* Avatar: Simple, clean circle with subtle shadow */}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
+          className="relative mb-8"
+        >
+          <div className="w-28 h-28 rounded-full shadow-apple overflow-hidden bg-gray-100 dark:bg-gray-800">
+            {!imgError ? (
+              <img 
+                src={SITE_CONFIG.avatar} 
+                alt="Profile" 
+                onError={() => setImgError(true)}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400">
+                 <span className="text-3xl font-bold">N</span>
+              </div>
+            )}
+          </div>
+          {/* Status Dot: Mimic AirPods case light */}
+          <div className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-[3px] border-white dark:border-black shadow-sm"></div>
+        </motion.div>
 
-      {/* Heading: 统一视觉重量，颜色加深 */}
-      <motion.h1 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-        className="text-5xl md:text-8xl tracking-tight mb-8"
-      >
-        {/* Hi, I'm: Medium weight, Dark Slate */}
-        <span className="font-sans font-medium text-slate-900 dark:text-white mr-3 md:mr-5 tracking-tight">Hi, I'm</span>
-        {/* Nova: Bold Italic, Serif */}
-        <span className="font-serif font-bold italic text-slate-900 dark:text-white relative inline-block">
-            Nova
-            <span className="text-primary-500 ml-1 not-italic text-4xl md:text-6xl absolute -top-1 md:top-1">.</span>
-        </span>
-      </motion.h1>
-      
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-        className="max-w-2xl mx-auto mb-12"
-      >
-        {/* Quote: 去掉引号，颜色变淡，字体适中 */}
-        <p className="text-base md:text-lg text-slate-500 dark:text-gray-400 font-serif leading-relaxed italic mb-8">
+        {/* Heading: SF Pro Display Style - Big, Bold, Tight Tracking */}
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900 dark:text-white mb-6"
+        >
+          Hi, I'm Nova.
+        </motion.h1>
+        
+        {/* Subtitle: High legibility gray */}
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-xl md:text-2xl text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed font-medium mb-12"
+        >
            {SITE_CONFIG.description}
-        </p>
+        </motion.p>
 
-        {/* Roles: 极客风 Mono 字体，点分隔符 */}
-        <div className="flex flex-wrap justify-center items-center gap-3 text-sm font-mono text-slate-500 dark:text-slate-400 tracking-wide">
-           <span className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Cloud Architect</span>
-           <span className="text-slate-300 dark:text-gray-700">·</span>
-           <span className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">Self-hosting Geek</span>
-           <span className="text-slate-300 dark:text-gray-700">·</span>
-           <span className="hover:text-slate-900 dark:hover:text-white transition-colors cursor-default">AI Explorer</span>
-        </div>
-      </motion.div>
-
-      {/* GitHub Link: 保持极简 */}
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex items-center justify-center mb-20"
-      >
-        <a 
-          href={SITE_CONFIG.github} 
-          target="_blank" 
-          rel="noreferrer"
-          className="group flex items-center gap-1.5 text-xs font-mono font-medium text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors uppercase tracking-widest border-b border-transparent hover:border-slate-900 dark:hover:border-white pb-0.5"
+        {/* Bento Grid: iOS Widget Style */}
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.3 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl"
         >
-          <span>Follow on GitHub</span>
-          <ArrowUpRight className="w-3 h-3 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-        </a>
-      </motion.div>
+          {/* Widget 1: Cloud Lab (Large Square Widget) */}
+          <a href={SITE_CONFIG.links.cloudLab} target="_blank" rel="noopener noreferrer" className="block h-full">
+            <motion.div 
+              variants={popVariant}
+              whileHover="hover"
+              whileTap="tap"
+              className="glass-panel h-48 rounded-[2rem] p-6 flex flex-col justify-between hover:bg-white/90 dark:hover:bg-[#2C2C2E]/90 transition-colors cursor-pointer"
+            >
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-full bg-[#007AFF] flex items-center justify-center text-white shadow-lg shadow-blue-500/30">
+                  <Cloud className="w-5 h-5" />
+                </div>
+                <ArrowUpRight className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Cloud Lab</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Experimental Edge Server</p>
+              </div>
+            </motion.div>
+          </a>
 
-      {/* Cards: 软玻璃效果保持不变 */}
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
-        className="grid grid-cols-1 sm:grid-cols-3 gap-5 w-full max-w-3xl mx-auto mb-20 px-4 sm:px-0"
-      >
-        {/* Card 1 */}
-        <a 
-          href={SITE_CONFIG.links.cloudLab}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group block"
-        >
-          <div className="h-full px-6 py-5 bg-white/70 dark:bg-gray-900/40 backdrop-blur-md border border-gray-100 dark:border-gray-800 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-xl hover:shadow-gray-200/40 dark:hover:shadow-none transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center">
-            <div className="p-2.5 bg-blue-50 dark:bg-blue-900/20 rounded-full text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform duration-300">
-                <Cloud className="w-5 h-5" />
-            </div>
-            <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">Cloud Lab</span>
+          {/* Widget 2: File Transfer */}
+          <a href={SITE_CONFIG.links.fileTransfer} target="_blank" rel="noopener noreferrer" className="block h-full">
+            <motion.div 
+              variants={popVariant}
+              whileHover="hover"
+              whileTap="tap"
+              className="glass-panel h-48 rounded-[2rem] p-6 flex flex-col justify-between hover:bg-white/90 dark:hover:bg-[#2C2C2E]/90 transition-colors cursor-pointer"
+            >
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-full bg-[#34C759] flex items-center justify-center text-white shadow-lg shadow-green-500/30">
+                  <FileInput className="w-5 h-5" />
+                </div>
+                <ArrowUpRight className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Transfer</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">P2P File Sharing</p>
+              </div>
+            </motion.div>
+          </a>
+
+          {/* Widget 3: Blog/Notes */}
+          <div onClick={onReadNotes} className="block h-full cursor-pointer">
+             <motion.div 
+              variants={popVariant}
+              whileHover="hover"
+              whileTap="tap"
+              className="glass-panel h-48 rounded-[2rem] p-6 flex flex-col justify-between hover:bg-white/90 dark:hover:bg-[#2C2C2E]/90 transition-colors"
+            >
+              <div className="flex justify-between items-start">
+                <div className="w-10 h-10 rounded-full bg-[#AF52DE] flex items-center justify-center text-white shadow-lg shadow-purple-500/30">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <Command className="w-5 h-5 text-gray-400" />
+              </div>
+              <div className="text-left">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Read Notes</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Technical Blog</p>
+              </div>
+            </motion.div>
           </div>
-        </a>
+        </motion.div>
 
-        {/* Card 2 */}
-        <a 
-          href={SITE_CONFIG.links.fileTransfer}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group block"
-        >
-           <div className="h-full px-6 py-5 bg-white/70 dark:bg-gray-900/40 backdrop-blur-md border border-gray-100 dark:border-gray-800 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-xl hover:shadow-gray-200/40 dark:hover:shadow-none transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center">
-            <div className="p-2.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-full text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform duration-300">
-                <FileInput className="w-5 h-5" />
-            </div>
-            <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">File Transfer</span>
-          </div>
-        </a>
-
-        {/* Card 3 */}
-        <button 
-          onClick={onReadNotes}
-          className="group block w-full h-full"
-        >
-          <div className="h-full px-6 py-5 bg-white/70 dark:bg-gray-900/40 backdrop-blur-md border border-gray-100 dark:border-gray-800 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-xl hover:shadow-gray-200/40 dark:hover:shadow-none transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center">
-            <div className="p-2.5 bg-purple-50 dark:bg-purple-900/20 rounded-full text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300">
-                <BookOpen className="w-5 h-5" />
-            </div>
-            <span className="font-medium text-gray-900 dark:text-gray-100 text-sm">Read Notes</span>
-          </div>
-        </button>
-      </motion.div>
-
-      {/* Latest Post Preview */}
-      {latestPost && (
-        <motion.div
+        {/* Latest Post Pill */}
+        {latestPost && (
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="flex justify-center"
-        >
-            <button 
+            transition={{ delay: 0.5 }}
+            className="mt-16"
+          >
+             <button 
                 onClick={() => navigate(`/post/${latestPost.id}`)}
-                className="group flex items-center gap-3 text-sm text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="group flex items-center space-x-2 pl-1 pr-4 py-1 bg-white dark:bg-[#1C1C1E] rounded-full shadow-apple hover:shadow-apple-hover transition-all duration-300 border border-gray-100 dark:border-gray-800"
             >
-                <span className="font-mono text-xs uppercase tracking-wider">Latest</span>
-                <span className="w-px h-3 bg-gray-200 dark:bg-gray-800"></span>
-                <span className="font-serif italic text-gray-600 dark:text-gray-300 group-hover:underline underline-offset-4 decoration-gray-300 group-hover:decoration-gray-900 transition-all">
+                <div className="px-3 py-1 bg-gray-100 dark:bg-gray-800 rounded-full text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 group-hover:bg-[#007AFF] group-hover:text-white transition-colors">
+                  New
+                </div>
+                <span className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-[#007AFF] dark:group-hover:text-[#0A84FF] transition-colors">
                     {latestPost.title}
                 </span>
-                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:translate-x-1 transition-transform" />
             </button>
-        </motion.div>
-      )}
+          </motion.div>
+        )}
 
+      </div>
     </section>
   );
 };
