@@ -72,26 +72,39 @@ async function generate() {
     return;
   }
 
-  const files = fs.readdirSync(POSTS_DIR).filter(file => file.endsWith('.md'));
+  const files = fs.readdirSync(POSTS_DIR).filter(file => file.endsWith('.md') && !file.startsWith('_'));
   const posts = [];
 
   for (const file of files) {
-    const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
-    const { metadata, body } = parseFrontmatter(rawContent);
-    
-    if (metadata) {
+    try {
+      const rawContent = fs.readFileSync(path.join(POSTS_DIR, file), 'utf-8');
+      const { metadata, body } = parseFrontmatter(rawContent);
+      
+      // Default fallback values if metadata is missing
       const id = file.replace('.md', '');
+      const title = metadata?.title || id.replace(/-/g, ' ');
+      const date = metadata?.date || new Date().toDateString();
+      const excerpt = metadata?.excerpt || body.slice(0, 150) + '...';
+      const category = metadata?.category || 'General';
+      const tags = Array.isArray(metadata?.tags) ? metadata.tags : (metadata?.tags ? [metadata.tags] : []);
+      const coverImage = metadata?.coverImage || `https://picsum.photos/seed/${id}/800/600`;
       
       // Auto-calculate read time if not provided
-      const readTime = metadata.readTime || calculateReadTime(body);
+      const readTime = metadata?.readTime || calculateReadTime(body);
 
       posts.push({
         id,
-        ...metadata,
+        title,
+        excerpt,
+        date,
+        category,
+        tags,
+        coverImage,
         readTime,
-        tags: Array.isArray(metadata.tags) ? metadata.tags : [metadata.tags],
-        author: metadata.author || { name: 'Nova', avatar: 'https://picsum.photos/id/64/200/200' }
+        author: metadata?.author || { name: 'Nova', avatar: 'https://picsum.photos/id/64/200/200' }
       });
+    } catch (err) {
+      console.warn(`Skipping file ${file} due to error:`, err.message);
     }
   }
 
