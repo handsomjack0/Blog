@@ -114,7 +114,12 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
         </motion.p>
 
         {/* 3. Bento Grid: Responsive Fixes */}
-        {/* 使用 w-full 和 max-w-4xl 限制最大宽度，同时确保 grid 在不同尺寸下自适应 */}
+        {/* 
+            Grid Logic:
+            - Mobile (default): grid-cols-1 (stacked)
+            - Tablet (sm): grid-cols-2 (2x2 grid, but since we have 3 items, we handle the 3rd)
+            - Desktop (lg): grid-cols-3 (3 side by side)
+        */}
         <motion.div 
           variants={itemVariants}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full max-w-4xl mx-auto px-2"
@@ -163,7 +168,8 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
             </motion.div>
           </a>
 
-          {/* Widget 3 - Full width on tablet (sm), regular on desktop (lg) */}
+          {/* Widget 3 - Responsive Span Fix */}
+          {/* On tablet (sm), make this span 2 columns to fill the gap. On desktop (lg), span 1. */}
           <div onClick={onReadNotes} className="block w-full sm:col-span-2 lg:col-span-1 cursor-pointer">
              <motion.div 
               variants={cardHoverVariants}
