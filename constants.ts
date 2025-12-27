@@ -19,6 +19,18 @@ export const SITE_CONFIG = {
   links: {
     cloudLab: "https://epic.nova.zz.ac",
     fileTransfer: "https://pan.nova.zz.ac",
+  },
+  
+  // [关键配置] EmailJS
+  emailJS: {
+    // 1. Service ID: 已从你的截图获取
+    serviceId: "service_0mcz7do",
+    
+    // 2. Template ID: 已从你的截图获取 (template_089s12c)
+    templateId: "template_089s12c", 
+    
+    // 3. Public Key: 已从你的截图获取 (VxVx0shKi5swFTp6e)
+    publicKey: "VxVx0shKi5swFTp6e"
   }
 };
 
