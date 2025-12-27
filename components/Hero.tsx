@@ -17,167 +17,155 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
   const [imgError, setImgError] = useState(false);
 
   return (
-    <section className="relative pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center overflow-hidden">
+    <section className="relative pt-40 pb-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto text-center overflow-hidden">
       
-      {/* Background Enhancements: Grid & Ambient Glow */}
-      <div className="absolute inset-0 -z-20 h-full w-full bg-white dark:bg-gray-900 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+      {/* Background: Minimalist Grid, darker and more subtle */}
+      <div className="absolute inset-0 -z-20 h-full w-full bg-gray-50 dark:bg-gray-950 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:32px_32px]"></div>
       
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[600px] h-[400px] bg-primary-500/20 rounded-full blur-[100px] opacity-50 dark:opacity-20 pointer-events-none"></div>
+      {/* Glow: Changed from Blue/Purple to simple White/Gray fog */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[800px] h-[500px] bg-gray-200/40 dark:bg-gray-800/20 rounded-full blur-[120px] pointer-events-none"></div>
       
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative inline-block mb-8"
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative inline-block mb-10"
       >
-        <div className="w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-tr from-primary-400 to-purple-500 shadow-xl shadow-primary-500/20">
-          {/* 头像图片：增加错误处理，如果加载失败则显示首字母 */}
+        {/* Avatar Container: Removed Rainbow Gradient. Added Museum-style shadow and thin border. */}
+        <div className="relative w-32 h-32 md:w-44 md:h-44 rounded-full bg-gray-100 dark:bg-gray-900 shadow-2xl shadow-gray-500/10 dark:shadow-black/50 ring-1 ring-gray-200 dark:ring-gray-800 overflow-hidden">
           {!imgError ? (
             <img 
               src={SITE_CONFIG.avatar} 
               alt="Profile" 
               onError={() => setImgError(true)}
-              className="w-full h-full rounded-full object-cover border-4 border-white dark:border-gray-900 bg-white"
+              className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-700"
             />
           ) : (
-            <div className="w-full h-full rounded-full border-4 border-white dark:border-gray-900 bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-               <span className="text-4xl md:text-5xl font-bold text-white">
-                 {SITE_CONFIG.name.charAt(0)}
-               </span>
+            <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500">
+               <span className="text-4xl font-serif italic">N</span>
             </div>
           )}
         </div>
         
-        {/* [修改 1] 状态指示灯 (已移除 animate-ping 闪烁效果，改为静止) */}
-        <div className="absolute bottom-3 right-3 flex h-5 w-5" title="System Online">
-          <span className="relative inline-flex rounded-full h-full w-full bg-green-500 border-[3px] border-white dark:border-gray-900"></span>
+        {/* Status Indicator: Minimalist Dot */}
+        <div className="absolute bottom-4 right-4 flex h-4 w-4" title="System Online">
+          <span className="relative inline-flex rounded-full h-full w-full bg-emerald-500/80 border-2 border-white dark:border-gray-950"></span>
         </div>
       </motion.div>
 
       <motion.h1 
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-        className="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-6"
+        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        className="text-5xl md:text-8xl font-serif font-medium text-gray-900 dark:text-gray-100 tracking-tight mb-8"
       >
-        Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-500 to-blue-600 animate-gradient-x pb-2">Nova</span>.
+        Hi, I'm <span className="italic relative inline-block">
+            Nova
+            <span className="absolute -bottom-2 left-0 w-full h-1 bg-gray-200 dark:bg-gray-800 rounded-full"></span>
+        </span>.
       </motion.h1>
       
       <motion.p 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed"
+        transition={{ duration: 0.8, delay: 0.3 }}
+        className="text-lg md:text-xl text-gray-500 dark:text-gray-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed tracking-wide"
       >
-        {SITE_CONFIG.description} <br />
-        <span className="font-semibold text-gray-800 dark:text-gray-100">Cloud Architect</span>
-        <span className="mx-3 text-gray-400">•</span>
-        <span className="font-semibold text-gray-800 dark:text-gray-100">Self-hosting Geek</span>
-        <span className="mx-3 text-gray-400">•</span>
-        <span className="font-semibold text-gray-800 dark:text-gray-100">AI Explorer</span>
+        {SITE_CONFIG.description} <br className="hidden md:block"/>
+        <span className="mt-4 block text-sm md:text-base font-medium text-gray-400 dark:text-gray-500 uppercase tracking-widest">
+           Cloud Architect &nbsp;•&nbsp; Self-hosting Geek &nbsp;•&nbsp; AI Explorer
+        </span>
       </motion.p>
 
-      {/* Improved GitHub Button: More distinct pill shape */}
+      {/* GitHub Link: Minimalist Pill */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
-        className="flex items-center justify-center space-x-4 mb-12"
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="flex items-center justify-center mb-16"
       >
         <a 
           href={SITE_CONFIG.github} 
           target="_blank" 
           rel="noreferrer"
-          className="group flex items-center space-x-2 px-5 py-2.5 rounded-full bg-gray-100/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 text-gray-600 hover:text-black dark:text-gray-400 dark:hover:text-white transition-all hover:scale-105 active:scale-95 shadow-sm hover:shadow-md hover:border-gray-300 dark:hover:border-gray-600"
+          className="group flex items-center gap-3 px-6 py-2 rounded-full border border-gray-200 dark:border-gray-800 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:border-gray-400 dark:hover:border-gray-600 transition-all duration-300"
         >
           <Github className="w-4 h-4" />
-          <span className="font-medium text-sm">Follow on GitHub</span>
-          <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300" />
+          <span className="text-sm font-medium">Follow on GitHub</span>
         </a>
       </motion.div>
 
-      {/* Buttons: Fixed Widths & Colored Glows */}
+      {/* Ghost Buttons: All consistent, minimalist, wireframe style */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        className="flex flex-col sm:flex-row items-center justify-center gap-5 w-full mb-12"
+        transition={{ duration: 0.5, delay: 0.5 }}
+        className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full mb-16"
       >
-        {/* Primary Button: Cloud Lab (Blue Glow) */}
+        {/* Button 1 */}
         <a 
           href={SITE_CONFIG.links.cloudLab}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto group"
+          className="w-full sm:w-auto"
         >
           <motion.button 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full sm:w-48 px-6 py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-2xl shadow-lg shadow-primary-500/25 hover:shadow-primary-500/50 transition-all duration-300 flex items-center justify-center space-x-3 font-semibold"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full sm:w-48 px-8 py-4 bg-transparent border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-300 flex items-center justify-center gap-3 group"
           >
-            <Cloud className="w-5 h-5" />
-            <span>我的云端实验室</span>
+            <Cloud className="w-4 h-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+            <span className="font-medium">Cloud Lab</span>
           </motion.button>
         </a>
 
-        {/* Secondary Button: Transfer (Green Glow) */}
+        {/* Button 2 */}
         <a 
           href={SITE_CONFIG.links.fileTransfer}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full sm:w-auto group"
+          className="w-full sm:w-auto"
         >
            <motion.button 
-             whileHover={{ scale: 1.05 }}
-             whileTap={{ scale: 0.95 }}
-             className="w-full sm:w-48 px-6 py-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/60 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-green-500/20 hover:border-green-500/30 transition-all duration-300 flex items-center justify-center space-x-3"
+             whileHover={{ scale: 1.02 }}
+             whileTap={{ scale: 0.98 }}
+             className="w-full sm:w-48 px-8 py-4 bg-transparent border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-300 flex items-center justify-center gap-3 group"
           >
-            <div className="text-green-600 dark:text-green-400">
-              <FileInput className="w-5 h-5" />
-            </div>
-            <span className="font-semibold text-gray-700 dark:text-gray-200">极速文件传输</span>
+            <FileInput className="w-4 h-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+            <span className="font-medium">File Transfer</span>
           </motion.button>
         </a>
 
-        {/* Secondary Button: Notes (Purple Glow) */}
+        {/* Button 3 */}
         <motion.button 
           onClick={onReadNotes}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          className="w-full sm:w-48 px-6 py-4 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/60 rounded-2xl shadow-sm hover:shadow-lg hover:shadow-purple-500/20 hover:border-purple-500/30 transition-all duration-300 flex items-center justify-center space-x-3"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full sm:w-48 px-8 py-4 bg-transparent border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-300 flex items-center justify-center gap-3 group"
         >
-          <div className="text-purple-600 dark:text-purple-400">
-            <BookOpen className="w-5 h-5" />
-          </div>
-          <span className="font-semibold text-gray-700 dark:text-gray-200">技术笔记</span>
+          <BookOpen className="w-4 h-4 text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white transition-colors" />
+          <span className="font-medium">Read Notes</span>
         </motion.button>
       </motion.div>
 
-      {/* Latest Post Preview Card */}
+      {/* Latest Post Preview: Simplified */}
       {latestPost && (
         <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.7 }}
             className="flex justify-center"
         >
-            <div 
+            <button 
                 onClick={() => navigate(`/post/${latestPost.id}`)}
-                className="cursor-pointer inline-flex items-center gap-3 px-5 py-3 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all duration-300 group"
+                className="group flex items-center gap-3 text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
             >
-                <div className="flex items-center gap-2">
-                    <span className="relative flex h-2 w-2">
-                      {/* Removed animate-ping here too */}
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
-                    </span>
-                    <span className="text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400">Latest</span>
-                </div>
-                <div className="h-4 w-px bg-gray-300 dark:bg-gray-600"></div>
-                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 max-w-[200px] sm:max-w-none truncate">
+                <span className="font-serif italic">Latest writing:</span>
+                <span className="underline underline-offset-4 decoration-gray-300 dark:decoration-gray-700 group-hover:decoration-gray-900 dark:group-hover:decoration-white transition-all">
                     {latestPost.title}
                 </span>
-                <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all" />
-            </div>
+                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+            </button>
         </motion.div>
       )}
 
