@@ -10,12 +10,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        // [修改] 引入衬线体 Playfair Display
         sans: ['Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         serif: ['Playfair Display', 'Georgia', 'Times New Roman', 'serif'],
+        // [修改] 增加极客风等宽字体
+        mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
       },
       colors: {
-        // [修改] Primary 色调从亮蓝改为低饱和度的 Slate (岩石灰)，营造极简/硬核感
         primary: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -34,7 +34,7 @@ export default {
         DEFAULT: {
           css: {
             color: theme('colors.gray.700'),
-            fontFamily: theme('fontFamily.serif'), // 让文章正文更有阅读感 (可选，这里暂时只改标题)
+            fontFamily: theme('fontFamily.serif'),
             'code::before': { content: '""' },
             'code::after': { content: '""' },
             a: {
