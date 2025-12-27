@@ -7,8 +7,8 @@ export const SITE_CONFIG = {
   // [修改 2] 首页中间的个人简介
   description: "Mastering the edge, exploring the unknown.",
   
-  // [修改 3] 头像图片地址 👇 根据您的截图，图片在 public 根目录下，所以路径改为 /avatar.jpg
-  avatar: "/avatar.jpg", 
+  // [修改 3] 头像图片地址 👇 已修正为 .png
+  avatar: "/images/avatar.png", 
 
   // [修改 4] 联系邮箱
   email: "Gunddam.X@gmail.com",

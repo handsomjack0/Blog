@@ -115,8 +115,8 @@ async function generate() {
         tags,
         coverImage,
         readTime,
-        // Updated fallback avatar to local path matches public/avatar.jpg
-        author: metadata?.author || { name: 'Nova', avatar: '/avatar.jpg' }
+        // Updated fallback avatar to .png
+        author: metadata?.author || { name: 'Nova', avatar: '/images/avatar.png' }
       });
     } catch (err) {
       console.warn(`Skipping file ${file} due to error:`, err.message);
