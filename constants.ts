@@ -5,7 +5,7 @@ export const SITE_CONFIG = {
   name: "Nova.zz.ac",
   
   // [修改 2] 首页中间的个人简介
-  description: "Exploring the cloud, one bit at a time.",
+  description: "Mastering the edge, exploring the unknown.",
   
   // [修改 3] 头像图片
   avatar: "https://picsum.photos/id/64/200/200", 
