@@ -70,21 +70,21 @@ const Home = ({
       <Portfolio />
       <Podcast />
 
-      <div id="blog" className="py-20 bg-[#FAFAFA] dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800">
+      <div id="blog" className="py-20 bg-[#FAFAFA] dark:bg-gray-950 border-t border-gray-100 dark:border-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-12">
             <div className="lg:w-2/3">
               <div className="flex flex-col sm:flex-row items-center justify-between mb-8 gap-4">
-                <h2 className="text-2xl font-serif font-bold border-l-4 border-gray-300 dark:border-gray-600 pl-4 self-start sm:self-center">Latest Tech Notes</h2>
+                <h2 className="text-2xl font-serif font-bold text-gray-900 dark:text-gray-100 border-l-4 border-gray-300 dark:border-gray-600 pl-4 self-start sm:self-center">Latest Tech Notes</h2>
                 <div className="relative w-full sm:w-auto">
                    <input 
                       type="text" 
                       placeholder="Search..." 
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full sm:w-64 pl-10 pr-4 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-mono focus:ring-2 focus:ring-gray-400 outline-none transition-shadow"
+                      className="w-full sm:w-64 pl-10 pr-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-mono focus:ring-2 focus:ring-gray-400 outline-none transition-shadow text-gray-900 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-600"
                    />
-                   <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
+                   <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400 dark:text-gray-500" />
                 </div>
               </div>
 
@@ -114,14 +114,14 @@ const Home = ({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700">
+                <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
                   <p className="text-gray-500 font-mono">No articles found matching "{searchQuery}"</p>
                 </div>
               )}
 
               {!searchQuery && !isPostsLoading && (
                 <div className="mt-12 flex justify-center">
-                    <button className="px-6 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-mono hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors shadow-sm">
+                    <button className="px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-mono text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shadow-sm">
                         LOAD MORE ARTICLES
                     </button>
                 </div>
@@ -242,7 +242,7 @@ const AppContent: React.FC = () => {
 
   return (
     <HelmetProvider>
-      <div className="min-h-screen bg-[#FAFAFA] dark:bg-[#0a0a0a] text-gray-900 dark:text-gray-100 font-sans selection:bg-gray-300 selection:text-black dark:selection:bg-gray-700 dark:selection:text-white">
+      <div className="min-h-screen bg-[#FAFAFA] dark:bg-gray-950 text-gray-900 dark:text-gray-100 font-sans selection:bg-gray-300 selection:text-black dark:selection:bg-gray-700 dark:selection:text-white transition-colors duration-500">
         <SEO />
         <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <main>

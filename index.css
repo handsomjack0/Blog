@@ -19,7 +19,6 @@
     animation: gradient-x 4s linear infinite;
   }
   
-  /* [修改] 噪点纹理背景 - 增加纸质/胶片感 */
   .bg-noise {
     position: relative;
   }
@@ -35,6 +34,34 @@
     opacity: 0.04;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
+}
+
+/* [新增] 极客风格列表样式：将默认圆点替换为 -> 箭头 */
+.prose ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+}
+
+.prose ul > li {
+  position: relative;
+  padding-left: 1.5em;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose ul > li::before {
+  content: "->";
+  font-family: 'JetBrains Mono', monospace;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #6366f1; /* Indigo 500 */
+  font-weight: bold;
+  font-size: 0.9em;
+}
+/* 暗色模式下微调箭头颜色 */
+.dark .prose ul > li::before {
+  color: #818cf8; /* Indigo 400 */
 }
 
 @keyframes gradient-x {
@@ -54,15 +81,19 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #d4d4d8; /* Zinc 300 */
   border-radius: 4px;
 }
 .dark ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #3f3f46; /* Zinc 700 */
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #a1a1aa; /* Zinc 400 */
 }
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #52525b; /* Zinc 600 */
+}
+
 /* PrismJS Code Block Tweaks */
 pre[class*="language-"] {
   border-radius: 0.75rem;

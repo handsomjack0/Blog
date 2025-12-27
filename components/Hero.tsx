@@ -32,7 +32,7 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
         className="relative inline-block mb-12"
       >
         {/* Avatar Container: [修改] 移除硬边框，增加柔和的“博物馆级”漫射阴影 */}
-        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full shadow-[0_20px_60px_-10px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_-10px_rgba(255,255,255,0.1)] overflow-hidden bg-gray-100 dark:bg-gray-800">
+        <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full shadow-[0_20px_60px_-10px_rgba(0,0,0,0.15)] dark:shadow-[0_20px_60px_-10px_rgba(255,255,255,0.05)] overflow-hidden bg-gray-100 dark:bg-gray-800/80">
           {!imgError ? (
             <img 
               src={SITE_CONFIG.avatar} 
@@ -49,7 +49,7 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
         
         {/* Status Indicator: [修改] 更小、更精致的绿色信号点，模拟设备指示灯 */}
         <div className="absolute bottom-2 right-4 flex h-3 w-3" title="System Online">
-           <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-600 dark:bg-emerald-500"></span>
+           <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-600 dark:bg-emerald-500 shadow-lg shadow-emerald-500/50"></span>
         </div>
       </motion.div>
 

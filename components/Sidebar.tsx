@@ -47,12 +47,12 @@ const StatusItem: React.FC<{ label: string; url: string; icon: React.ReactNode }
     textColor = "text-green-600 dark:text-green-400";
     
     // Color code the latency
-    let latencyColor = "text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400";
-    if (latency && latency > 200) latencyColor = "text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30 dark:text-yellow-400";
-    if (latency && latency > 500) latencyColor = "text-red-600 bg-red-100 dark:bg-red-900/30 dark:text-red-400";
+    let latencyColor = "text-green-600 bg-green-50 dark:bg-green-900/20 dark:text-green-400";
+    if (latency && latency > 200) latencyColor = "text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20 dark:text-yellow-400";
+    if (latency && latency > 500) latencyColor = "text-red-600 bg-red-50 dark:bg-red-900/20 dark:text-red-400";
 
     latencyBadge = (
-      <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${latencyColor}`}>
+      <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${latencyColor} border border-transparent dark:border-white/5`}>
         {latency}ms
       </span>
     );
@@ -63,7 +63,7 @@ const StatusItem: React.FC<{ label: string; url: string; icon: React.ReactNode }
   }
 
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-100 dark:border-gray-700 transition-all hover:border-gray-300 dark:hover:border-gray-600 group">
+    <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900/40 rounded-lg border border-gray-100 dark:border-gray-800 transition-all hover:border-gray-300 dark:hover:border-gray-600 group">
         <div className="flex items-center space-x-2">
             <div className="text-gray-400 group-hover:text-primary-500 transition-colors">
               {icon}
@@ -73,9 +73,9 @@ const StatusItem: React.FC<{ label: string; url: string; icon: React.ReactNode }
         <div className="flex items-center space-x-2">
             {latencyBadge}
             <div className="flex items-center space-x-1.5">
-                <div className={`w-2 h-2 rounded-full ${statusColor} ${status === 'online' ? 'animate-pulse' : ''}`}></div>
+                <div className={`w-1.5 h-1.5 rounded-full ${statusColor} ${status === 'online' ? 'animate-pulse' : ''}`}></div>
                 {/* Hide text on very small screens if needed, but sidebar is usually wide enough */}
-                <span className={`text-xs font-medium ${textColor}`}>{statusText}</span>
+                <span className={`text-xs font-mono font-medium ${textColor}`}>{statusText}</span>
             </div>
         </div>
     </div>
@@ -87,11 +87,11 @@ const Sidebar: React.FC = () => {
     <aside className="space-y-8">
       
       {/* Live System Status Widget */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-900/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
         <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
                 <Activity className="w-5 h-5 text-primary-500" />
-                <h3 className="font-bold text-gray-900 dark:text-white text-lg">System Status</h3>
+                <h3 className="font-serif font-bold text-gray-900 dark:text-gray-100 text-lg">System Status</h3>
             </div>
             <Wifi className="w-4 h-4 text-gray-400" />
         </div>
@@ -115,19 +115,19 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Newsletter Widget */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-900/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
         <div className="flex items-center space-x-2 mb-4">
             <Mail className="w-5 h-5 text-primary-500" />
-            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Newsletter</h3>
+            <h3 className="font-serif font-bold text-gray-900 dark:text-gray-100 text-lg">Newsletter</h3>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 font-light">
           Get the latest cloud labs and tech notes delivered to your inbox.
         </p>
         <form className="space-y-3" onSubmit={(e) => e.preventDefault()}>
           <input 
             type="email" 
             placeholder="Your email address" 
-            className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 outline-none text-sm dark:text-white transition-shadow"
+            className="w-full px-4 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm dark:text-white transition-all placeholder-gray-400 dark:placeholder-gray-600"
           />
           <button className="w-full py-2 bg-gray-900 dark:bg-primary-600 text-white rounded-lg text-sm font-medium hover:opacity-90 transition-opacity">
             Subscribe
@@ -136,16 +136,16 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Tags Cloud */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-900/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800">
          <div className="flex items-center space-x-2 mb-4">
             <Tag className="w-5 h-5 text-primary-500" />
-            <h3 className="font-bold text-gray-900 dark:text-white text-lg">Tag Cloud</h3>
+            <h3 className="font-serif font-bold text-gray-900 dark:text-gray-100 text-lg">Tag Cloud</h3>
         </div>
         <div className="flex flex-wrap gap-2">
           {TAGS.map(tag => (
             <span 
               key={tag} 
-              className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-primary-50 dark:hover:bg-primary-900 hover:text-primary-600 dark:hover:text-primary-400 cursor-pointer transition-colors"
+              className="px-3 py-1 bg-gray-100 dark:bg-gray-800 border border-transparent dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-xs font-mono font-medium hover:bg-primary-50 dark:hover:bg-gray-700 hover:text-primary-600 dark:hover:text-primary-400 hover:border-primary-200 dark:hover:border-gray-600 cursor-pointer transition-all"
             >
               #{tag}
             </span>
