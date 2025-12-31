@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '../types';
-import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon, Mail, Eye } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon, Mail } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Giscus from './Giscus';
 import { motion as motionOriginal, useScroll, useSpring } from 'framer-motion';
@@ -76,7 +76,6 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
 const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
-  const [imgError, setImgError] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const navigate = useNavigate();
   
@@ -118,13 +117,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
       setTimeout(() => Prism.highlightAll(), 0);
     }
   }, [content, isLoading]);
-
-  // Handle Busuanzi Reload on Route Change
-  useEffect(() => {
-    if (!isLoading && (window as any).Busuanzi) {
-        (window as any).Busuanzi.fetch();
-    }
-  }, [isLoading, post.id]);
 
   const handleShare = async (platform: 'twitter' | 'linkedin' | 'copy' | 'native' | 'email') => {
     const rawUrl = window.location.href;
@@ -206,30 +198,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
                         <Clock className="w-4 h-4 mr-1.5 opacity-80" />
                         {post.readTime}
                     </span>
-                    {/* Busuanzi View Count */}
-                    <span className="flex items-center backdrop-blur-sm bg-black/20 px-2 py-1 rounded-md" id="busuanzi_container_page_pv" style={{ display: 'none' }}>
-                        <Eye className="w-4 h-4 mr-1.5 opacity-80" />
-                        <span id="busuanzi_value_page_pv">Loading...</span>
-                    </span>
-                 </div>
-
-                 <div className="flex items-center">
-                     {!imgError ? (
-                       <img 
-                         src={post.author?.avatar} 
-                         alt={post.author?.name} 
-                         onError={() => setImgError(true)}
-                         className="w-10 h-10 rounded-full mr-3 object-cover border-2 border-white/30 shadow-md"
-                       />
-                     ) : (
-                       <div className="w-10 h-10 rounded-full mr-3 bg-white/20 border border-white/30 flex items-center justify-center text-white font-bold">
-                         {post.author?.name?.charAt(0) || 'N'}
-                       </div>
-                     )}
-                     <div className="flex flex-col text-white">
-                        <span className="text-sm font-bold text-shadow-sm">{post.author?.name}</span>
-                        <span className="text-xs text-white/70">Author</span>
-                     </div>
                  </div>
               </div>
           </div>
