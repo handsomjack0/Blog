@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '../types';
-import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon, Mail } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Giscus from './Giscus';
 import { motion as motionOriginal, useScroll, useSpring } from 'framer-motion';
@@ -119,19 +119,26 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
     }
   }, [content, isLoading]);
 
-  const handleShare = async (platform: 'twitter' | 'linkedin' | 'copy' | 'native') => {
-    const url = window.location.href;
+  const handleShare = async (platform: 'twitter' | 'linkedin' | 'copy' | 'native' | 'email') => {
+    // rawUrl is for systems that need standard encoding (browsers, APIs)
+    const rawUrl = window.location.href;
+    // decodedUrl is for humans (readable Chinese characters instead of %E5%...)
+    const decodedUrl = decodeURIComponent(rawUrl);
+    
     const text = `Read "${post.title}" by ${post.author?.name}`;
 
     switch (platform) {
       case 'twitter':
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(rawUrl)}`, '_blank');
         break;
       case 'linkedin':
-        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(rawUrl)}`, '_blank');
+        break;
+      case 'email':
+        window.open(`mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(text + '\n\n' + decodedUrl)}`, '_self');
         break;
       case 'copy':
-        await navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(decodedUrl);
         setCopiedLink(true);
         setTimeout(() => setCopiedLink(false), 2000);
         break;
@@ -140,10 +147,9 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
           navigator.share({
             title: post.title,
             text: post.excerpt,
-            url: url
+            url: rawUrl // Native share generally prefers the real encoded URL
           }).catch(console.error);
         } else {
-          // Fallback to copy if native share not supported
           handleShare('copy');
         }
         break;
@@ -269,13 +275,20 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
                 <Linkedin className="w-4 h-4" />
               </button>
               <button 
+                onClick={() => handleShare('email')}
+                className="p-2 rounded-full bg-white dark:bg-gray-700 text-gray-500 hover:text-red-500 hover:bg-red-500/10 transition-colors shadow-sm border border-gray-200 dark:border-gray-600"
+                title="Share via Email"
+              >
+                <Mail className="w-4 h-4" />
+              </button>
+              <button 
                 onClick={() => handleShare('copy')}
                 className="p-2 rounded-full bg-white dark:bg-gray-700 text-gray-500 hover:text-green-500 hover:bg-green-500/10 transition-colors shadow-sm border border-gray-200 dark:border-gray-600 relative group"
-                title="Copy Link"
+                title="Copy Link (Decoded)"
               >
                 {copiedLink ? <Check className="w-4 h-4 text-green-500" /> : <LinkIcon className="w-4 h-4" />}
                 {copiedLink && (
-                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] bg-black text-white px-2 py-1 rounded">Copied!</span>
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] bg-black text-white px-2 py-1 rounded whitespace-nowrap">Link Copied!</span>
                 )}
               </button>
               {typeof navigator.share === 'function' && (
