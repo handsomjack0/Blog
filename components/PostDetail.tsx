@@ -13,7 +13,6 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import Mermaid from './Mermaid';
 
-// Add necessary Prism languages
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
 import 'prismjs/components/prism-bash';
@@ -27,14 +26,12 @@ interface PostDetailProps {
   post: Post;
 }
 
-// Custom CodeBlock component
 const CodeBlock = ({ children, className, node, ...rest }: any) => {
   const [copied, setCopied] = useState(false);
   const match = /language-(\w+)/.exec(className || '');
   const language = match ? match[1] : '';
   const content = String(children).replace(/\n$/, '');
 
-  // Intercept Mermaid blocks
   if (language === 'mermaid') {
     return <Mermaid chart={content} />;
   }
@@ -51,7 +48,6 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
 
   return (
     <div className="relative group rounded-xl overflow-hidden my-6 border border-gray-200 dark:border-gray-800 shadow-sm dark:shadow-none">
-      {/* Mac-style Window Controls */}
       <div className="flex items-center justify-between px-4 py-2 bg-gray-100 dark:bg-[#1a1a1c] border-b border-gray-200 dark:border-gray-800">
          <div className="flex gap-1.5">
            <div className="w-3 h-3 rounded-full bg-red-400/80" />
@@ -140,65 +136,64 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
         transition={{ duration: 0.4 }}
         className="relative bg-white dark:bg-gray-900/40 backdrop-blur-sm rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden"
       >
-        {/* [Modified] Top decorative line */}
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-50 dark:opacity-80 z-20" />
 
-        {/* [Modified] Cover Image Area - Clean, no text overlay */}
-        <div className="relative h-64 md:h-96 w-full group">
+        {/* Cover Image Area - Metadata Restored, Title Removed */}
+        <div className="relative h-64 md:h-96 w-full group overflow-hidden">
           <img 
             src={post.coverImage} 
             alt={post.title} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          {/* Back Button Only - Made more visible with backdrop blur and dark bg hint */}
-          <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-start pointer-events-none">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500" />
+          
+          <div className="absolute inset-0 p-6 md:p-8 flex flex-col justify-between">
               <button 
                 onClick={() => navigate('/')}
-                className="pointer-events-auto self-start p-2.5 bg-black/30 hover:bg-black/40 backdrop-blur-md rounded-full text-white transition-all border border-white/20 shadow-lg"
+                className="self-start p-2.5 bg-black/30 hover:bg-black/40 backdrop-blur-md rounded-full text-white transition-all border border-white/20 shadow-lg"
               >
                 <ArrowLeft className="w-6 h-6" />
               </button>
+
+              {/* Metadata displayed on image, but TITLE is removed as requested */}
+              <div className="space-y-4">
+                 <div className="flex flex-wrap items-center gap-4 text-sm text-white/90 font-medium">
+                     <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider text-white bg-primary-500/80 backdrop-blur-md rounded-full shadow-sm border border-white/10">
+                        {post.category}
+                    </span>
+                    <span className="flex items-center backdrop-blur-sm bg-black/20 px-2 py-1 rounded-md">
+                        <Calendar className="w-4 h-4 mr-1.5 opacity-80" />
+                        {post.date}
+                    </span>
+                     <span className="flex items-center backdrop-blur-sm bg-black/20 px-2 py-1 rounded-md">
+                        <Clock className="w-4 h-4 mr-1.5 opacity-80" />
+                        {post.readTime}
+                    </span>
+                 </div>
+
+                 <div className="flex items-center">
+                     {!imgError ? (
+                       <img 
+                         src={post.author?.avatar} 
+                         alt={post.author?.name} 
+                         onError={() => setImgError(true)}
+                         className="w-10 h-10 rounded-full mr-3 object-cover border-2 border-white/30 shadow-md"
+                       />
+                     ) : (
+                       <div className="w-10 h-10 rounded-full mr-3 bg-white/20 border border-white/30 flex items-center justify-center text-white font-bold">
+                         {post.author?.name?.charAt(0) || 'N'}
+                       </div>
+                     )}
+                     <div className="flex flex-col text-white">
+                        <span className="text-sm font-bold text-shadow-sm">{post.author?.name}</span>
+                        <span className="text-xs text-white/70">Author</span>
+                     </div>
+                 </div>
+              </div>
           </div>
         </div>
 
         <div className="p-8 md:p-12">
-          
-          {/* [New] Metadata Header Section (moved from image overlay) */}
-          <div className="mb-10 pb-8 border-b border-gray-100 dark:border-gray-800">
-             <div className="flex flex-wrap items-center gap-4 text-sm mb-6">
-                 <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-full">
-                    {post.category}
-                </span>
-                <span className="flex items-center text-gray-500 dark:text-gray-400 font-medium">
-                    <Calendar className="w-4 h-4 mr-1.5 opacity-70" />
-                    {post.date}
-                </span>
-                 <span className="flex items-center text-gray-500 dark:text-gray-400 font-medium">
-                    <Clock className="w-4 h-4 mr-1.5 opacity-70" />
-                    {post.readTime}
-                </span>
-             </div>
-
-             <div className="flex items-center">
-                 {!imgError ? (
-                   <img 
-                     src={post.author?.avatar} 
-                     alt={post.author?.name} 
-                     onError={() => setImgError(true)}
-                     className="w-10 h-10 rounded-full mr-3 object-cover bg-gray-100 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-sm"
-                   />
-                 ) : (
-                   <div className="w-10 h-10 rounded-full mr-3 bg-gray-200 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold">
-                     {post.author?.name?.charAt(0) || 'N'}
-                   </div>
-                 )}
-                 <div className="flex flex-col">
-                    <span className="text-sm font-bold text-gray-900 dark:text-white">{post.author?.name}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">Author</span>
-                 </div>
-             </div>
-          </div>
-
           <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-serif prose-p:leading-relaxed prose-li:marker:text-primary-500">
             <Markdown 
               remarkPlugins={[remarkGfm, remarkMath]}
