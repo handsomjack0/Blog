@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '../types';
-import { ArrowLeft, Calendar, Clock, Tag, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Giscus from './Giscus';
 import { motion as motionOriginal, useScroll, useSpring } from 'framer-motion';
@@ -77,6 +77,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [imgError, setImgError] = useState(false);
+  const [copiedLink, setCopiedLink] = useState(false);
   const navigate = useNavigate();
   
   const { scrollYProgress } = useScroll();
@@ -118,6 +119,37 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
     }
   }, [content, isLoading]);
 
+  const handleShare = async (platform: 'twitter' | 'linkedin' | 'copy' | 'native') => {
+    const url = window.location.href;
+    const text = `Read "${post.title}" by ${post.author?.name}`;
+
+    switch (platform) {
+      case 'twitter':
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'linkedin':
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+        break;
+      case 'copy':
+        await navigator.clipboard.writeText(url);
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2000);
+        break;
+      case 'native':
+        if (navigator.share) {
+          navigator.share({
+            title: post.title,
+            text: post.excerpt,
+            url: url
+          }).catch(console.error);
+        } else {
+          // Fallback to copy if native share not supported
+          handleShare('copy');
+        }
+        break;
+    }
+  };
+
   if (isLoading) {
     return <PostDetailSkeleton />;
   }
@@ -155,7 +187,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
                 <ArrowLeft className="w-6 h-6" />
               </button>
 
-              {/* Metadata displayed on image, but TITLE is removed as requested */}
               <div className="space-y-4">
                  <div className="flex flex-wrap items-center gap-4 text-sm text-white/90 font-medium">
                      <span className="px-3 py-1 text-xs font-bold uppercase tracking-wider text-white bg-primary-500/80 backdrop-blur-md rounded-full shadow-sm border border-white/10">
@@ -206,6 +237,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
             </Markdown>
           </div>
 
+          {/* Tags Section */}
           <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 flex flex-wrap gap-2">
              {post.tags.map(tag => (
                <span key={tag} className="flex items-center px-3 py-1 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 rounded-full text-sm font-mono hover:border-primary-500 transition-colors">
@@ -213,6 +245,49 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
                   {tag}
                </span>
              ))}
+          </div>
+
+          {/* Share Section */}
+          <div className="mt-8 flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800">
+            <span className="text-sm font-bold text-gray-600 dark:text-gray-300 flex items-center">
+              <Share2 className="w-4 h-4 mr-2 text-primary-500" />
+              Share this post
+            </span>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => handleShare('twitter')}
+                className="p-2 rounded-full bg-white dark:bg-gray-700 text-gray-500 hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10 transition-colors shadow-sm border border-gray-200 dark:border-gray-600"
+                title="Share on Twitter"
+              >
+                <Twitter className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => handleShare('linkedin')}
+                className="p-2 rounded-full bg-white dark:bg-gray-700 text-gray-500 hover:text-[#0A66C2] hover:bg-[#0A66C2]/10 transition-colors shadow-sm border border-gray-200 dark:border-gray-600"
+                title="Share on LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => handleShare('copy')}
+                className="p-2 rounded-full bg-white dark:bg-gray-700 text-gray-500 hover:text-green-500 hover:bg-green-500/10 transition-colors shadow-sm border border-gray-200 dark:border-gray-600 relative group"
+                title="Copy Link"
+              >
+                {copiedLink ? <Check className="w-4 h-4 text-green-500" /> : <LinkIcon className="w-4 h-4" />}
+                {copiedLink && (
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 text-[10px] bg-black text-white px-2 py-1 rounded">Copied!</span>
+                )}
+              </button>
+              {typeof navigator.share === 'function' && (
+                <button 
+                  onClick={() => handleShare('native')}
+                  className="p-2 rounded-full bg-primary-500 text-white hover:bg-primary-600 transition-colors shadow-sm shadow-primary-500/20"
+                  title="More Options"
+                >
+                  <Share2 className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
 
           <Giscus />
