@@ -115,11 +115,13 @@ const Home = ({
                 </div>
               ) : (
                 <div className="text-center py-20 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
-                  <p className="text-gray-500 font-mono">No articles found matching "{searchQuery}"</p>
+                  <p className="text-gray-500 font-mono">
+                    {searchQuery ? `No articles found matching "${searchQuery}"` : "No articles yet. Stay tuned!"}
+                  </p>
                 </div>
               )}
 
-              {!searchQuery && !isPostsLoading && (
+              {!searchQuery && !isPostsLoading && filteredPosts.length > 0 && (
                 <div className="mt-12 flex justify-center">
                     <button className="px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full text-sm font-mono text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors shadow-sm">
                         LOAD MORE ARTICLES
@@ -198,16 +200,8 @@ const AppContent: React.FC = () => {
           throw new Error("posts.json not found");
         }
       } catch (e) {
-        console.warn("Falling back to runtime fetching:", e);
-        const postIds = ['1', '2', '3', '4', '5', '6']; 
-        try {
-          const promises = postIds.map(id => fetchPostWithFrontmatter(id));
-          const loadedPosts = await Promise.all(promises);
-          setPosts(loadedPosts);
-        } catch (err) {
-           console.error("Critical: Failed to load posts", err);
-           setPosts(MOCK_POSTS);
-        }
+        console.warn("Falling back to empty state:", e);
+        setPosts(MOCK_POSTS);
       } finally {
         setIsPostsLoading(false);
       }

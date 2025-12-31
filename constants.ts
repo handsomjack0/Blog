@@ -40,7 +40,7 @@ export const MOCK_PROJECTS: Project[] = [
     id: '1',
     title: 'Cloud Dashboard Pro',
     description: 'A real-time server monitoring dashboard built with Next.js and WebSocket integration.',
-    image: 'https://picsum.photos/id/1/600/400',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
     tags: ['Next.js', 'WebSocket', 'Tailwind'],
     link: 'https://epic.nova.zz.ac',
     github: 'https://github.com'
@@ -49,7 +49,7 @@ export const MOCK_PROJECTS: Project[] = [
     id: '2',
     title: 'Nova File Transfer',
     description: 'Secure peer-to-peer file sharing service utilizing WebRTC for maximum privacy.',
-    image: 'https://picsum.photos/id/20/600/400',
+    image: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?q=80&w=800&auto=format&fit=crop',
     tags: ['WebRTC', 'React', 'Node.js'],
     link: 'https://pan.nova.zz.ac',
     github: 'https://github.com'
@@ -58,7 +58,7 @@ export const MOCK_PROJECTS: Project[] = [
     id: '3',
     title: 'AI Code Assistant',
     description: 'VS Code extension that uses local LLMs to suggest code completions.',
-    image: 'https://picsum.photos/id/60/600/400',
+    image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=800&auto=format&fit=crop',
     tags: ['TypeScript', 'AI', 'VS Code'],
     link: '#',
     github: 'https://github.com'
@@ -73,7 +73,7 @@ export const MOCK_PODCASTS: PodcastEpisode[] = [
     description: 'Discussing the pros and cons of edge computing in 2024.',
     duration: '45:20',
     date: 'Oct 12, 2023',
-    cover: 'https://picsum.photos/id/30/300/300'
+    cover: 'https://images.unsplash.com/photo-1478737270239-2f02b77ac6d5?q=80&w=400&auto=format&fit=crop'
   },
   {
     id: '2',
@@ -81,7 +81,7 @@ export const MOCK_PODCASTS: PodcastEpisode[] = [
     description: 'How reducing digital clutter can improve your code quality.',
     duration: '32:15',
     date: 'Nov 05, 2023',
-    cover: 'https://picsum.photos/id/40/300/300'
+    cover: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?q=80&w=400&auto=format&fit=crop'
   },
   {
     id: '3',
@@ -89,7 +89,7 @@ export const MOCK_PODCASTS: PodcastEpisode[] = [
     description: 'War stories from production outages and how we fixed them.',
     duration: '55:00',
     date: 'Dec 01, 2023',
-    cover: 'https://picsum.photos/id/50/300/300'
+    cover: 'https://images.unsplash.com/photo-1667372393119-c85c020799a3?q=80&w=400&auto=format&fit=crop'
   }
 ];
 
@@ -97,75 +97,18 @@ export const MOCK_PODCASTS: PodcastEpisode[] = [
 // Please create a folder named 'posts' in your public root.
 // Create markdown files named '1.md', '2.md', etc.
 
-// 这些是开发环境或加载失败时的后备数据 (Fallback Data)
-// 如果你想修改实际显示的文章，请去 public/posts/ 文件夹修改对应的 .md 文件
 export const MOCK_POSTS: Post[] = [
   {
-    id: '1',
-    title: 'Away’s Expandable Suitcases Are Here – The Most Spacious Bags Yet',
-    excerpt: 'Discover why flexibility in luggage is the new standard for modern digital nomads.',
-    // [修改 4] 文章封面图
-    coverImage: 'https://picsum.photos/id/48/800/600',
-    date: '30 Nov 2023',
-    category: 'Travel',
-    tags: ['Lifestyle', 'Gear'],
-    author: { name: 'Nova', avatar: SITE_CONFIG.avatar },
-    readTime: '5 min'
-  },
-  {
-    id: '2',
-    title: 'Deploying a Serverless API with Cloudflare Workers',
-    excerpt: 'A comprehensive guide to building low-latency APIs at the edge using Cloudflare ecosystem.',
-    coverImage: 'https://picsum.photos/id/119/800/600',
-    date: '15 Oct 2023',
-    category: 'DevOps',
-    tags: ['Cloudflare', 'Serverless', 'JavaScript'],
-    author: { name: 'Nova', avatar: SITE_CONFIG.avatar },
-    readTime: '8 min'
-  },
-  {
-    id: '3',
-    title: 'Understanding React Server Components',
-    excerpt: 'How RSC changes the way we think about data fetching and bundle sizes in modern web development.',
-    coverImage: 'https://picsum.photos/id/180/800/600',
-    date: '02 Oct 2023',
-    category: 'Frontend',
-    tags: ['React', 'Web'],
-    author: { name: 'Nova', avatar: SITE_CONFIG.avatar },
-    readTime: '12 min'
-  },
-  {
-    id: '4',
-    title: 'Minimalist Desk Setup for Productivity',
-    excerpt: 'Optimizing your physical space to maximize digital output. Less is more.',
-    coverImage: 'https://picsum.photos/id/3/800/600',
-    date: '28 Sep 2023',
-    category: 'Lifestyle',
-    tags: ['Workspace', 'Productivity'],
-    author: { name: 'Nova', avatar: SITE_CONFIG.avatar },
-    readTime: '4 min'
-  },
-  {
-    id: '5',
-    title: 'Kubernetes for Beginners: Pods and Services',
-    excerpt: 'Breaking down the complexity of container orchestration into digestible concepts.',
-    coverImage: 'https://picsum.photos/id/60/800/600',
-    date: '10 Sep 2023',
-    category: 'DevOps',
-    tags: ['K8s', 'Docker'],
-    author: { name: 'Nova', avatar: SITE_CONFIG.avatar },
-    readTime: '15 min'
-  },
-  {
-    id: '6',
-    title: 'The Future of AI in Software Engineering',
-    excerpt: 'Will LLMs replace junior developers? An analysis of the current trend.',
-    coverImage: 'https://picsum.photos/id/201/800/600',
-    date: '05 Sep 2023',
-    category: 'Opinion',
-    tags: ['AI', 'Career'],
-    author: { name: 'Nova', avatar: SITE_CONFIG.avatar },
-    readTime: '6 min'
+    id: '在年末的坐标上，开启科技与生活的记录',
+    title: '在年末的坐标上，开启科技与生活的记录',
+    excerpt: '今天是2025年12月31日。这是我的个人网站上的第一篇文字。选择在这样的时间点开始，或许是因为“年末”本身自带一种平静的仪式感——它不喧闹，只是提供一个坐标，让我们确认自己行至何处，又将去向何方。',
+    coverImage: 'https://cloud-drive-911.pages.dev/api/file/BQACAgUAAyEGAATJBRGbAAIBYGlU5wkYpaqFwa72DD_NiDHZpog1AAL_GQACJDGoVsYj4WRqUnX_OAQ?key=Zzj123&filename=%E5%A4%95%E9%98%B3-%E5%A4%9C%E7%A9%BA-%E5%A4%A9%E9%99%85%E7%BA%BF.png',
+    date: '2025-12-31',
+    category: '随笔',
+    tags: ['Year End', 'Tech', 'Life', '2025'],
+    author: { name: 'Nova', avatar: 'https://github.com/handsomjack0.png' },
+    readTime: '3 min',
+    content: '' // Content is fetched dynamically via Markdown component, but this entry ensures the card appears.
   }
 ];
 
