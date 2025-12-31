@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Post } from '../types';
-import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon, Mail, Heart, Coffee, X, QrCode, Eye, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Tag, Copy, Check, Share2, Linkedin, Twitter, Link as LinkIcon, Mail, Eye } from 'lucide-react';
 import Markdown from 'react-markdown';
 import Giscus from './Giscus';
-import { motion as motionOriginal, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import { motion as motionOriginal, useScroll, useSpring } from 'framer-motion';
 import Prism from 'prismjs';
 import { PostDetailSkeleton } from './Skeleton';
 import { fetchPostWithFrontmatter } from '../lib/frontmatter';
@@ -12,7 +12,6 @@ import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import Mermaid from './Mermaid';
-import confetti from 'canvas-confetti';
 
 import 'prismjs/components/prism-javascript';
 import 'prismjs/components/prism-typescript';
@@ -74,82 +73,11 @@ const CodeBlock = ({ children, className, node, ...rest }: any) => {
   );
 };
 
-const DonateModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-    const [method, setMethod] = useState<'wechat' | 'alipay'>('wechat');
-    
-    // Placeholder QR Codes - REPLACE THESE WITH YOUR ACTUAL URLS
-    const qrCodes = {
-        wechat: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=WeChatPay_Placeholder", 
-        alipay: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Alipay_Placeholder"
-    };
-
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <>
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70]"
-                    />
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-sm bg-white dark:bg-[#1C1C1E] rounded-3xl p-6 shadow-2xl z-[80] border border-gray-100 dark:border-gray-800"
-                    >
-                        <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                                <Coffee className="w-5 h-5 text-yellow-500" />
-                                Buy me a coffee
-                            </h3>
-                            <button onClick={onClose} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-                                <X className="w-5 h-5 text-gray-500" />
-                            </button>
-                        </div>
-
-                        <div className="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl mb-6">
-                            <button 
-                                onClick={() => setMethod('wechat')}
-                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${method === 'wechat' ? 'bg-[#28C445] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
-                            >
-                                WeChat
-                            </button>
-                            <button 
-                                onClick={() => setMethod('alipay')}
-                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${method === 'alipay' ? 'bg-[#1677FF] text-white shadow-md' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'}`}
-                            >
-                                Alipay
-                            </button>
-                        </div>
-
-                        <div className="flex flex-col items-center justify-center p-4 bg-white dark:bg-black/20 rounded-2xl border border-gray-100 dark:border-gray-800/50 aspect-square mb-4">
-                            <img 
-                                src={qrCodes[method]} 
-                                alt={`${method} QR Code`} 
-                                className="w-48 h-48 object-contain rounded-lg" // Placeholder style
-                            />
-                        </div>
-                        
-                        <p className="text-center text-xs text-gray-400 font-medium">
-                            Thanks for supporting my work! <br/> Your contribution keeps the server running.
-                        </p>
-                    </motion.div>
-                </>
-            )}
-        </AnimatePresence>
-    );
-};
-
 const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
   const [content, setContent] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [imgError, setImgError] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
-  const [showDonate, setShowDonate] = useState(false);
   const navigate = useNavigate();
   
   const { scrollYProgress } = useScroll();
@@ -161,13 +89,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [post.id]);
-
-  useEffect(() => {
-    // Check local storage for user's personal "cheer"
-    const storageKey = `cheered-${post.id}`;
-    const userHasLiked = localStorage.getItem(storageKey) === 'true';
-    setIsLiked(userHasLiked);
   }, [post.id]);
 
   useEffect(() => {
@@ -204,32 +125,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
         (window as any).Busuanzi.fetch();
     }
   }, [isLoading, post.id]);
-
-  const handleCheer = () => {
-    // This is now purely a client-side "fun" interaction
-    const storageKey = `cheered-${post.id}`;
-    localStorage.setItem(storageKey, 'true');
-    setIsLiked(true);
-
-    // Fire Confetti
-    const scalar = 2;
-    const heart = confetti.shapeFromPath({
-        path: 'M16.7 3.98C13.5 1.1 9.03.68 6.09 3.1 3.15 5.5 2.5 9.8 4.7 13.5L12 21l7.3-7.5c2.2-3.7 1.55-8-1.39-10.4-1.2-1-2.6-1.3-3.9-1.1z'
-    });
-
-    confetti({
-        particleCount: 30,
-        scalar,
-        spread: 60,
-        origin: { y: 0.7 },
-        shapes: [heart],
-        colors: ['#FF3B30', '#FF9500', '#FFCC00']
-    });
-  };
-
-  const scrollToComments = () => {
-      document.getElementById('comments-section')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const handleShare = async (platform: 'twitter' | 'linkedin' | 'copy' | 'native' | 'email') => {
     const rawUrl = window.location.href;
@@ -272,8 +167,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
         style={{ scaleX }}
       />
       
-      <DonateModal isOpen={showDonate} onClose={() => setShowDonate(false)} />
-
       <motion.article 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -362,47 +255,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
                   {tag}
                </span>
              ))}
-          </div>
-
-          {/* Revised Interactions Section */}
-          <div className="mt-12 flex flex-col items-center justify-center gap-6">
-              <div className="flex flex-wrap justify-center gap-4">
-                  {/* Cheer Button (Local only) */}
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={handleCheer}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-full shadow-lg border transition-all ${isLiked ? 'bg-red-50 text-red-500 border-red-200 shadow-red-500/10 dark:bg-red-900/20 dark:border-red-900/50' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-900'}`}
-                  >
-                      <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
-                      <span className="font-bold">{isLiked ? 'Cheered!' : 'Cheer'}</span>
-                  </motion.button>
-                  
-                  {/* Real Like (Scroll to Giscus) */}
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={scrollToComments}
-                    className="flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 rounded-full shadow-lg hover:text-primary-500 hover:border-primary-200 transition-all"
-                  >
-                      <MessageCircle className="w-5 h-5" />
-                      <span className="font-bold">Comment & React</span>
-                  </motion.button>
-
-                  <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={() => setShowDonate(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-full shadow-lg shadow-orange-500/20 border border-white/20"
-                  >
-                      <Coffee className="w-5 h-5" />
-                      <span className="font-bold">Sponsor</span>
-                  </motion.button>
-              </div>
-              <p className="text-xs text-center text-gray-400 dark:text-gray-600 font-mono max-w-sm">
-                  The "Cheer" button is just for fun (local). <br/>
-                  To leave a <b>real</b> like, please use the reactions in the comments section below.
-              </p>
           </div>
 
           {/* Share Section */}
