@@ -5,6 +5,7 @@ import { motion as motionOriginal } from 'framer-motion';
 import { Post } from '../types';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
+import { optimizeImage } from '../lib/utils';
 
 const motion = motionOriginal as any;
 
@@ -152,7 +153,7 @@ const Hero: React.FC<HeroProps> = ({ onReadNotes, latestPost }) => {
             <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 relative">
                 {!imgError ? (
                 <img 
-                    src={SITE_CONFIG.avatar} 
+                    src={optimizeImage(SITE_CONFIG.avatar, 200)} 
                     alt="Profile" 
                     onError={() => setImgError(true)}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

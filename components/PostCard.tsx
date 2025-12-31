@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Post } from '../types';
 import { motion as motionOriginal } from 'framer-motion';
+import { optimizeImage } from '../lib/utils';
 
 const motion = motionOriginal as any;
 
@@ -22,10 +23,10 @@ const PostCard: React.FC<PostCardProps> = ({ post, featured = false, onClick }) 
       className={`cursor-pointer group relative flex flex-col bg-white dark:bg-[#1C1C1E] rounded-[2rem] overflow-hidden shadow-premium hover:shadow-premium-hover transition-all duration-300 border border-gray-100 dark:border-gray-800 ${featured ? 'md:col-span-2' : ''}`}
     >
       
-      {/* Image: Full bleed, high quality */}
-      <div className={`relative overflow-hidden w-full ${featured ? 'h-80 md:h-[28rem]' : 'h-64'}`}>
+      {/* Image: Full bleed, high quality but optimized */}
+      <div className={`relative overflow-hidden w-full bg-gray-100 dark:bg-gray-800 ${featured ? 'h-80 md:h-[28rem]' : 'h-64'}`}>
         <img 
-          src={post.coverImage} 
+          src={optimizeImage(post.coverImage, featured ? 1200 : 800)} 
           alt={post.title} 
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

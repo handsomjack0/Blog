@@ -7,6 +7,7 @@ import { motion as motionOriginal, useScroll, useSpring } from 'framer-motion';
 import Prism from 'prismjs';
 import { PostDetailSkeleton } from './Skeleton';
 import { fetchPostWithFrontmatter } from '../lib/frontmatter';
+import { optimizeImage } from '../lib/utils';
 import { useNavigate } from 'react-router-dom';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
@@ -169,11 +170,12 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
         <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-50 dark:opacity-80 z-20" />
 
         {/* Cover Image Area */}
-        <div className="relative h-64 md:h-96 w-full group overflow-hidden">
+        <div className="relative h-64 md:h-96 w-full group overflow-hidden bg-gray-100 dark:bg-gray-800">
           <img 
-            src={post.coverImage} 
+            src={optimizeImage(post.coverImage, 1600)} 
             alt={post.title} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            loading="eager" 
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-500" />
           
