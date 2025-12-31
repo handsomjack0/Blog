@@ -3,10 +3,10 @@
  * Features:
  * 1. Converts to WebP (smaller file size).
  * 2. Resizes based on the 'width' parameter.
- * 3. Compresses with quality setting.
+ * 3. Compresses with quality setting (default increased to 85 for better aesthetics).
  * 4. Caches globally via Cloudflare CDN.
  */
-export function optimizeImage(url: string, width: number = 1200): string {
+export function optimizeImage(url: string, width: number = 1200, quality: number = 85): string {
   if (!url) return '';
   
   // Skip optimization for:
@@ -22,8 +22,8 @@ export function optimizeImage(url: string, width: number = 1200): string {
     return url;
   }
 
-  // Remove protocol to prevent double encoding issues in some edge cases, 
-  // though standard wsrv handles standard URLs well.
-  // We use encodeURIComponent to ensure special characters in the URL (like in your cloud drive) pass correctly.
-  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&q=75&output=webp`;
+  // Remove protocol to prevent double encoding issues in some edge cases
+  // output=webp: WebP format (high quality, low size)
+  // il: Progressive load
+  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${width}&q=${quality}&output=webp&il`;
 }

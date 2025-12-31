@@ -172,7 +172,8 @@ const PostDetail: React.FC<PostDetailProps> = ({ post }) => {
         {/* Cover Image Area */}
         <div className="relative h-64 md:h-96 w-full group overflow-hidden bg-gray-100 dark:bg-gray-800">
           <img 
-            src={optimizeImage(post.coverImage, 1600)} 
+            // Width 2500, Quality 90 for high-res screens
+            src={optimizeImage(post.coverImage, 2500, 90)} 
             alt={post.title} 
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading="eager" 

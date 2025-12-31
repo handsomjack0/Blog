@@ -26,7 +26,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, featured = false, onClick }) 
       {/* Image: Full bleed, high quality but optimized */}
       <div className={`relative overflow-hidden w-full bg-gray-100 dark:bg-gray-800 ${featured ? 'h-80 md:h-[28rem]' : 'h-64'}`}>
         <img 
-          src={optimizeImage(post.coverImage, featured ? 1200 : 800)} 
+          // 800px width is sufficient for cards. Quality 85 for crisp thumbnails.
+          src={optimizeImage(post.coverImage, featured ? 1200 : 800, 85)} 
           alt={post.title} 
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
